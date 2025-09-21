@@ -5,7 +5,7 @@ document.querySelector('.mobile-toggle').addEventListener('click', function() {
 
 // Fechar o menu ao clicar em um item (apenas mobile)
 if (window.innerWidth <= 900) {
-    document.querySelectorAll('.item, .subitem').forEach(item => {
+    document.querySelectorAll('.subitem').forEach(item => {
         item.addEventListener('click', function() {
             document.querySelector('.sidebar').classList.remove('active');
         });
