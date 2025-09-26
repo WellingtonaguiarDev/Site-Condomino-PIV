@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel Morador</title>
+  <link rel="stylesheet" href="../assets/css/homemorador.css" />
+</head>
+<body>
+
+  <!-- Header / Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+      <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
+    </div>
+
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="buscar">🔍</button>
+      <button class="icon-btn" aria-label="notificações">🔔</button>
+      <button class="icon-btn" aria-label="menu">⋮</button>
+    </div>
+  </header>
+
+  <!-- Área principal (sidebar + conteúdo) -->
+  <div class="main">
+    <!-- Menu lateral -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="avatar">👤</div>
+        <p class="greeting">Olá, Morador</p>
+      </div>
+
+      <!-- Menu fixo: condomínio atual -->
+      <nav class="menu-fixed">
+        <p class="menu-title">Meu Condomínio</p>
+        <div class="item active">Condomínio A</div>
+      </nav>
+
+      <!-- Menu rolável -->
+      <nav class="menu-scroll" aria-label="menu principal">
+
+        <div class="menu-item">
+          <input type="checkbox" id="meusdados-toggle" />
+          <label for="meusdados-toggle" class="item">Meus Dados ▾</label>
+          <div class="submenu">
+            <div class="subitem active">Atualizar cadastro</div>
+            <div class="subitem">Meus veículos</div>
+            <div class="subitem">Minhas dependências</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <input type="checkbox" id="financeiro-toggle" />
+          <label for="financeiro-toggle" class="item">Financeiro ▾</label>
+          <div class="submenu">
+            <div class="subitem">Boletos</div>
+            <div class="subitem">Histórico de pagamentos</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <input type="checkbox" id="areas-toggle" />
+          <label for="areas-toggle" class="item">Áreas Comuns ▾</label>
+          <div class="submenu">
+            <div class="subitem">Reservar espaço</div>
+            <div class="subitem">Minhas reservas</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <input type="checkbox" id="ocorrencias-toggle" />
+          <label for="ocorrencias-toggle" class="item">Ocorrências ▾</label>
+          <div class="submenu">
+            <div class="subitem">Registrar ocorrência</div>
+            <div class="subitem">Acompanhar ocorrências</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <input type="checkbox" id="comunicados-toggle" />
+          <label for="comunicados-toggle" class="item">Comunicados ▾</label>
+          <div class="submenu">
+            <div class="subitem">Avisos do condomínio</div>
+            <div class="subitem">Documentos</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <input type="checkbox" id="mensagens-toggle" />
+          <label for="mensagens-toggle" class="item">Mensagens ▾</label>
+          <div class="submenu">
+            <div class="subitem">Enviar mensagem ao síndico</div>
+            <div class="subitem">Minhas mensagens</div>
+          </div>
+        </div>
+
+      </nav>
+    </aside>
+
+    <!-- Conteúdo principal -->
+    <main class="content">
+      <div class="content-top">
+        <h1>Bem-vindo ao seu espaço digital no condomínio.</h1>
+        <p class="lead">Aqui você pode acessar seus boletos, reservar áreas comuns, registrar ocorrências e ficar por dentro dos comunicados.</p>
+      </div>
+
+      <!-- Cards no rodapé da área de conteúdo -->
+      <div class="bottom-cards">
+        <div class="card financeiro">
+          <h3>Financeiro</h3>
+          <p>Acesse seus boletos e acompanhe o histórico de pagamentos.</p>
+        </div>
+        <div class="card areas">
+          <h3>Áreas Comuns</h3>
+          <p>Reserve espaços como salão de festas, churrasqueira e muito mais.</p>
+        </div>
+        <div class="card comunicados">
+          <h3>Comunicados</h3>
+          <p>Fique por dentro dos avisos e documentos oficiais do condomínio.</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../assets/js/mobile.js"></script>
+  <script src="../assets/js/telasmorador.js"></script>
+</body>
+</html>
