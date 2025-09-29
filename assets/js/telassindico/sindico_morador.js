@@ -69,7 +69,7 @@ const telasMoradores = {
           </select>
 
           <input type="text" placeholder="Pesquisar...">
-          <button><i class="fa fa-search"></i> Buscar</button>
+          <button class="btn-buscar"><i class="fa fa-search"></i> Buscar</button>
         </div>
 
         <div class="historico-tabela">
@@ -80,6 +80,7 @@ const telasMoradores = {
                 <th>Bloco</th>
                 <th>Apartamento</th>
                 <th>Contato</th>
+                <th>Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -88,12 +89,20 @@ const telasMoradores = {
                 <td>Bloco A</td>
                 <td>101</td>
                 <td>(11) 91234-5678</td>
+                <td>
+                  <button class="btn-editar">Editar</button>
+                  <button class="btn-excluir">Excluir</button>
+                </td>
               </tr>
               <tr>
                 <td>João Santos</td>
                 <td>Bloco B</td>
                 <td>102</td>
                 <td>(21) 99876-5432</td>
+                <td>
+                  <button class="btn-editar">Editar</button>
+                  <button class="btn-excluir">Excluir</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -102,27 +111,3 @@ const telasMoradores = {
     </div>
   `
 };
-
-// Seleciona a área de conteúdo
-const content = document.querySelector(".content");
-
-// Função para trocar a tela
-function mostrarTela(nome) {
-  if (telasMoradores[nome]) {
-    content.innerHTML = telasMoradores[nome];
-  } else {
-    content.innerHTML = `
-      <div class="content-top">
-        <h1>Tela não encontrada</h1>
-      </div>
-    `;
-  }
-}
-
-// Adiciona evento a cada subitem do menu
-document.querySelectorAll(".subitem").forEach(item => {
-  item.addEventListener("click", () => {
-    const tela = item.textContent.trim();
-    mostrarTela(tela);
-  });
-});
