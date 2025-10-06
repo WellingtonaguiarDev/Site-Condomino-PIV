@@ -17,10 +17,10 @@
     <!-- Área de login -->
     <h2 class="subtitulo">Usuário cadastrado</h2>
 
-    <form class="login-form">
-      <input type="text" placeholder="Digite o seu usuário">
-      <input type="password" placeholder="Digite a sua senha">
-      <button type="button" onclick="location.href='pages/homesindico.html'">Entrar</button>
+    <form class="login-form" id="loginForm">
+      <input type="email" id="email" placeholder="Digite o seu e-mail" required>
+      <input type="password" id="password" placeholder="Digite a sua senha" required>
+      <button type="submit">Entrar</button>
     </form>
 
     <!-- Links extras -->
@@ -35,5 +35,7 @@
       <p>Acordo de confidencialidade</p>
     </footer>
   </div>
+
+  <script src="assets/js/login.js"></script>
 </body>
 </html>
