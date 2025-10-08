@@ -20,34 +20,22 @@
 
     <!-- Formulário de cadastro -->
     <form class="login-form">
-      <!-- Dropdown de condomínios -->
-      <select name="condominio" required>
-        <option value="">Selecione seu condomínio</option>
-        <option value="condominio1">Condomínio A</option>
-        <option value="condominio2">Condomínio B</option>
-        <option value="condominio3">Condomínio C</option>
-      </select>
-
-      <!-- Campos do usuário -->
       <input type="text" name="nome" placeholder="Nome completo" required>
       <input type="text" name="cpf" placeholder="CPF" required>
       <input type="tel" name="telefone" placeholder="Telefone" required>
       <input type="email" name="email" placeholder="E-mail" required>      
 
-      <!-- Campos de endereço em duas colunas -->
+      <!-- Novo campo: código do condomínio -->
+      <input type="text" name="codigoCondominio" placeholder="Digite o código do condomínio" required>
+
+      <!-- Campos de apartamento e bloco -->
       <div class="endereco-group">
-        <input type="text" name="rua" placeholder="Rua" required>
-        <input type="text" name="numero" placeholder="Número" required>
-
-        <input type="text" name="complemento" placeholder="Complemento">
-        <input type="text" name="bairro" placeholder="Bairro" required>
-
-        <input type="text" name="cidade" placeholder="Cidade" required>
-        <input type="text" name="estado" placeholder="Estado" required>
-
-        <input type="text" name="cep" placeholder="CEP" required>
+        <input type="text" name="bloco" placeholder="Bloco" required>
+        <input type="text" name="apartamento" placeholder="Apartamento" required>
       </div>
 
+      <!-- Campo de senha -->
+      <input type="password" name="senha" placeholder="Senha" required>
 
       <!-- Botão de envio -->
       <button type="submit">Cadastrar</button>

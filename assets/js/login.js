@@ -8,7 +8,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   try {
     // 🟢 1. Envia a requisição de login para o backend (gera o token JWT)
-    const response = await fetch("https://condomineo-production.up.railway.app/api/v1/auth/token/", {
+    const response = await fetch("https://condomineo-production.up.railway.app/api/v1/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }), // envia o email e a senha em formato JSON
