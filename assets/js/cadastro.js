@@ -27,8 +27,17 @@ document.addEventListener("DOMContentLoaded", () => {
       condominium: codigoCondominio
     };
 
+    console.log("📤 Enviando JSON para o servidor:");
+    console.log(JSON.stringify(userData, null, 2));
+
+    // URL limpa para evitar espaços e quebras
+    let url = "https://condomineo-production.up.railway.app/api/v1/users/persons/";
+    console.log("🔍 URL original:", `"${url}"`);
+    url = url.trim();
+    console.log("✅ URL limpa:", `"${url}"`);
+
     try {
-      const response = await fetch("https://condomineo-production.up.railway.app/api/v1/users/persons/", {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -36,17 +45,27 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(userData)
       });
 
+      console.log("📡 Status da resposta:", response.status);
+
       if (response.ok) {
-        alert("Cadastro realizado com sucesso!");
+        alert("✅ Cadastro realizado com sucesso!");
         form.reset();
         window.location.href = "../index.html";
       } else {
-        const errorData = await response.json();
-        console.error("Erro no cadastro:", errorData);
-        alert("Erro ao cadastrar: " + (errorData.message || "verifique os dados e tente novamente."));
+        let errorText;
+        try {
+          const errorData = await response.json();
+          console.log("🧾 Resposta do servidor (JSON):", errorData);
+          errorText = errorData.message || JSON.stringify(errorData);
+        } catch {
+          const textData = await response.text();
+          console.warn("⚠️ Servidor retornou HTML ou texto:", textData);
+          errorText = textData;
+        }
+        alert("❌ Erro ao cadastrar:\n" + errorText);
       }
     } catch (error) {
-      console.error("Erro de rede:", error);
+      console.error("🚨 Erro de rede ou fetch:", error);
       alert("Erro de conexão com o servidor. Tente novamente mais tarde.");
     }
   });
