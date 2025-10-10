@@ -22,9 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
       password: senha,
       telephone: telefone,
       user_type: "resident",
-      apartment: parseInt(apartamento),
-      condominium: codigoCondominio,
-      block: bloco
+      apartment_number: apartamento,
+      apartment_block: bloco,
+      condominium: codigoCondominio
     };
 
     try {
