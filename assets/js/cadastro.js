@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(JSON.stringify(userData, null, 2));
 
     // URL limpa para evitar espaços e quebras
-    let url = "https://condomineo-production.up.railway.app/api/v1/users/persons/";
+    let url = "https://api.porttusmart.tech/api/v1/users/persons/";
     console.log("🔍 URL original:", `"${url}"`);
     url = url.trim();
     console.log("✅ URL limpa:", `"${url}"`);

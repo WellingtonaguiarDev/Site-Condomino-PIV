@@ -8,7 +8,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
 
   try {
     // 🟢 1. Envia a requisição de login para o backend (gera o token JWT)
-    const response = await fetch("https://condomineo-production.up.railway.app/api/v1/auth/login/", {
+    const response = await fetch("https://api.porttusmart.tech/api/v1/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }), // envia o email e a senha em formato JSON
@@ -23,7 +23,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     localStorage.setItem("refresh_token", data.refresh);
 
     // 🟢 3. Usa o token para buscar as informações do usuário logado
-    const meResponse = await fetch("https://condomineo-production.up.railway.app/api/v1/users/persons/me/", {
+    const meResponse = await fetch("https://api.porttusmart.tech/api/v1/users/persons/me/", {
       headers: {
         Authorization: `Bearer ${data.access}`, // envia o token de acesso no cabeçalho
         "Content-Type": "application/json",
