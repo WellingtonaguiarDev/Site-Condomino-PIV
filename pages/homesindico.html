@@ -39,13 +39,10 @@
         <p class="greeting">Olá, Gestor</p>
       </div>
 
-      <!-- Menu fixo: exibe os 4 condomínios (A..D) -->
-      <nav class="menu-fixed">
+      <nav class="menu-fixed" id="menuCondominios">
         <p class="menu-title">Meus Condomínios</p>
-        <div class="item active">Condomínio A</div>
-        <div class="item">Condomínio B</div>
-        <div class="item">Condomínio C</div>
-        <div class="item">Condomínio D</div>
+        <!-- Condomínios serão inseridos dinamicamente aqui -->
+        <div id="listaCondominios"></div>
       </nav>
 
       <!-- Menu rolável (itens restantes com submenus) -->
@@ -171,6 +168,7 @@
   <script src="../assets/js/telassindico/sindico_mensagens.js"></script>
   <script src="../assets/js/sindico_menu.js"></script>
   <script src="../assets/js/logout.js"></script>
+  <script src="../assets/js/sindico_condominios.js"></script>
 
    <!-- Script do menu suspenso -->
   <script>
