@@ -19,7 +19,14 @@
     <div class="topbar-right">
       <button class="icon-btn" aria-label="buscar">🔍</button>
       <button class="icon-btn" aria-label="notificações">🔔</button>
-      <button class="icon-btn" aria-label="menu">⋮</button>
+      <button class="icon-btn" aria-label="menu" id="menuButton">⋮</button>
+    </div>
+
+    <!-- Caixa de opções (menu suspenso) -->
+    <div class="menu-dropdown" id="menuDropdown">
+      <a href="#">Perfil</a>
+      <a href="#">Configurações</a>
+      <a href="../pages/logout.html" id="logoutBtn">Sair</a>
     </div>
   </header>
 
@@ -163,5 +170,27 @@
   <script src="../assets/js/telassindico/sindico_relatorios.js"></script>
   <script src="../assets/js/telassindico/sindico_mensagens.js"></script>
   <script src="../assets/js/sindico_menu.js"></script>
+  <script src="../assets/js/logout.js"></script>
+
+   <!-- Script do menu suspenso -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const menuButton = document.getElementById("menuButton");
+      const dropdown = document.getElementById("menuDropdown");
+
+      // Abre/fecha menu ao clicar nos três pontos
+      menuButton.addEventListener("click", function(e) {
+        e.stopPropagation();
+        dropdown.classList.toggle("menu-open");
+      });
+
+      // Fecha o menu ao clicar fora
+      document.addEventListener("click", function(e) {
+        if (!dropdown.contains(e.target) && e.target !== menuButton) {
+          dropdown.classList.remove("menu-open");
+        }
+      });
+    });
+  </script>
 </body>
 </html>
