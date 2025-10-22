@@ -1,11 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const lista = document.getElementById("listaCondominios");
-  const infoDiv = document.getElementById("infoCondominio");
 
   try {
     const token = localStorage.getItem("access_token");
 
-    // 🔹 Faz o GET para buscar os condomínios cadastrados
     const response = await fetch("https://api.porttusmart.tech/api/v1/core/condominiums/", {
       method: "GET",
       headers: {
@@ -29,34 +27,36 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     lista.innerHTML = ""; // limpa o texto "Carregando..."
 
-    // 🔹 Cria um item para cada condomínio retornado
+    // Cria um item para cada condomínio retornado
     condominios.forEach((cond) => {
       const item = document.createElement("div");
       item.classList.add("item");
       item.textContent = cond.name;
       item.dataset.id = cond.id;
 
-      // Ao clicar, exibe as informações do condomínio
+      // Ao clicar, salva o condomínio selecionado
       item.addEventListener("click", () => {
-        // remove destaque anterior
+        // Remove destaque anterior
         document.querySelectorAll(".menu-fixed .item").forEach(i => i.classList.remove("active"));
         item.classList.add("active");
 
-        const endereco = cond.address;
-        infoDiv.innerHTML = `
-          <h2>${cond.name}</h2>
-          <p><strong>Código:</strong> ${cond.code_condominium}</p>
-          <p><strong>CNPJ:</strong> ${cond.cnpj}</p>
-          <p><strong>Endereço:</strong> ${endereco.street}, ${endereco.number} ${endereco.complement ? '- ' + endereco.complement : ''}</p>
-          <p><strong>Bairro:</strong> ${endereco.neighborhood}</p>
-          <p><strong>Cidade:</strong> ${endereco.city} - ${endereco.state}</p>
-          <p><strong>CEP:</strong> ${endereco.zip_code}</p>
-          <p><strong>Criado em:</strong> ${new Date(cond.created_at).toLocaleDateString()}</p>
-        `;
+        // Salva o condomínio selecionado no localStorage
+        localStorage.setItem("condominioSelecionado", JSON.stringify({
+          id: cond.id,
+          name: cond.name,
+          code_condominium: cond.code_condominium
+        }));
       });
 
       lista.appendChild(item);
     });
+
+    // Opcional: se já tiver um condomínio salvo, marca ele como ativo
+    const condSalvo = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (condSalvo) {
+      const ativo = Array.from(lista.children).find(i => i.dataset.id == condSalvo.id);
+      if (ativo) ativo.classList.add("active");
+    }
 
   } catch (error) {
     console.error("❌ Erro:", error);
