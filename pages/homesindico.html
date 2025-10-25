@@ -10,25 +10,37 @@
 <body>
 
   <!-- Header / Topbar -->
-  <header class="topbar">
-    <div class="topbar-left">
-      <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
-      <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+    <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
+  </div>
+
+  <div class="topbar-right">
+    <button class="icon-btn" aria-label="buscar">🔍</button>
+
+    <!-- 🔔 Notificações -->
+    <div class="notification-wrapper">
+      <button id="notification-bell" class="icon-btn" aria-label="notificações">
+        🔔
+        <div id="notification-count"></div>
+      </button>
+      <div id="notification-dropdown" class="notification-dropdown">
+        <p class="no-notifications">Nenhuma nova solicitação.</p>
+      </div>
     </div>
 
-    <div class="topbar-right">
-      <button class="icon-btn" aria-label="buscar">🔍</button>
-      <button class="icon-btn" aria-label="notificações">🔔</button>
-      <button class="icon-btn" aria-label="menu" id="menuButton">⋮</button>
-    </div>
+    <!-- ⋮ Menu -->
+    <button class="icon-btn" aria-label="menu" id="menuButton">⋮</button>
+  </div>
 
-    <!-- Caixa de opções (menu suspenso) -->
-    <div class="menu-dropdown" id="menuDropdown">
-      <a href="#">Perfil</a>
-      <a href="#">Configurações</a>
-      <a href="../pages/logout.html" id="logoutBtn">Sair</a>
-    </div>
-  </header>
+  <!-- Caixa de opções (menu suspenso) -->
+  <div class="menu-dropdown" id="menuDropdown">
+    <a href="#">Perfil</a>
+    <a href="#">Configurações</a>
+    <a href="../pages/logout.html" id="logoutBtn">Sair</a>
+  </div>
+</header>
 
   <!-- Área principal (sidebar + conteúdo) -->
   <div class="main">
@@ -169,6 +181,7 @@
   <script src="../assets/js/sindico_menu.js"></script>
   <script src="../assets/js/logout.js"></script>
   <script src="../assets/js/sindico_condominios.js"></script>
+  <script src="../assets/js/sindico_notificacoes.js"></script>
 
    <!-- Script do menu suspenso -->
   <script>
