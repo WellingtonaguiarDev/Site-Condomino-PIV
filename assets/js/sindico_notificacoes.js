@@ -1,42 +1,35 @@
-// sindico_notificacoes.js - compatível com o formato da sua API
-const API_URL = "https://api.porttusmart.tech/api/v1/users/persons/";
-const token = localStorage.getItem("token");
+// sindico_notificacoes.js
+const API_URL_NOTIFICACOES = "https://api.porttusmart.tech/api/v1/users/persons/";
+const TOKEN_NOTIFICACOES = localStorage.getItem("token");
 
 // Elementos
 const bellBtn = document.getElementById("notification-bell");
 const dropdown = document.getElementById("notification-dropdown");
 const notificationCount = document.getElementById("notification-count");
 
-// Função principal
 async function carregarNotificacoes() {
-  if (!token) {
-    console.warn("Token não encontrado no localStorage (chave 'token').");
+  if (!TOKEN_NOTIFICACOES) {
     dropdown.innerHTML = `<p class="no-notifications">Usuário não autenticado.</p>`;
     atualizarContador(0);
     return;
   }
 
   try {
-    const resp = await fetch(API_URL, {
+    const resp = await fetch(API_URL_NOTIFICACOES, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${TOKEN_NOTIFICACOES}`,
         "Content-Type": "application/json",
       },
     });
 
     if (!resp.ok) {
-      console.error("Erro ao buscar usuários:", resp.status);
       dropdown.innerHTML = `<p class="no-notifications">Erro ao carregar notificações (${resp.status}).</p>`;
       atualizarContador(0);
       return;
     }
 
     const data = await resp.json();
-    console.debug("Resposta completa da API:", data);
-
     const usuarios = data.results || [];
-
-    // FILTRO: apenas usuários pendentes (is_active = false)
     const pendentes = usuarios.filter(u => !u.is_active);
 
     atualizarLista(pendentes);
@@ -47,13 +40,11 @@ async function carregarNotificacoes() {
   }
 }
 
-// Atualiza o contador no sino
 function atualizarContador(qtd) {
   notificationCount.textContent = qtd > 0 ? qtd : "";
   notificationCount.style.display = qtd > 0 ? "inline-block" : "none";
 }
 
-// Atualiza o dropdown com as notificações
 function atualizarLista(usuarios) {
   dropdown.innerHTML = "";
 
@@ -82,30 +73,26 @@ function atualizarLista(usuarios) {
       </div>
     `;
 
-    // Eventos dos botões
     item.querySelector(".btn-approve").addEventListener("click", () => aprovarUsuario(usuario.id));
     item.querySelector(".btn-reject").addEventListener("click", () => rejeitarUsuario(usuario.id));
-
     dropdown.appendChild(item);
   });
 }
 
-// Aprovar usuário (PATCH para ativar)
 async function aprovarUsuario(id) {
   if (!confirm("Deseja aprovar este usuário?")) return;
 
   try {
-    const resp = await fetch(`${API_URL}${id}/`, {
+    const resp = await fetch(`${API_URL_NOTIFICACOES}${id}/`, {
       method: "PATCH",
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${TOKEN_NOTIFICACOES}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ is_active: true }) // <- ativa o usuário
+      body: JSON.stringify({ is_active: true }),
     });
 
     if (!resp.ok) throw new Error(`Status ${resp.status}`);
-
     alert("Usuário aprovado com sucesso!");
     carregarNotificacoes();
   } catch (err) {
@@ -114,18 +101,16 @@ async function aprovarUsuario(id) {
   }
 }
 
-// Rejeitar usuário (DELETE)
 async function rejeitarUsuario(id) {
   if (!confirm("Tem certeza que deseja rejeitar este usuário?")) return;
 
   try {
-    const resp = await fetch(`${API_URL}${id}/`, {
+    const resp = await fetch(`${API_URL_NOTIFICACOES}${id}/`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${TOKEN_NOTIFICACOES}` },
     });
 
     if (!resp.ok) throw new Error(`Status ${resp.status}`);
-
     alert("Usuário rejeitado e removido!");
     carregarNotificacoes();
   } catch (err) {
@@ -134,7 +119,6 @@ async function rejeitarUsuario(id) {
   }
 }
 
-// Toggle do dropdown
 bellBtn.addEventListener("click", () => {
   dropdown.classList.toggle("active");
 });
@@ -145,6 +129,5 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// Inicialização
 carregarNotificacoes();
 setInterval(carregarNotificacoes, 30000);

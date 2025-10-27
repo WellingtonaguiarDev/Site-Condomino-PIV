@@ -59,12 +59,11 @@
 
       <!-- Menu rolável (itens restantes com submenus) -->
       <nav class="menu-scroll" aria-label="menu principal">
-
         <div class="menu-item">
           <input type="checkbox" id="moradores-toggle" />
           <label for="moradores-toggle" class="item">Moradores ▾</label>
-          <div class="submenu">
-            <div class="subitem active">Cadastro de moradores</div>
+          <div class="submenu moradores">
+            <div class="subitem">Cadastro de moradores</div>
             <div class="subitem">Histórico de moradores</div>
           </div>
         </div>
@@ -139,7 +138,6 @@
             <div class="subitem">Caixa de mensagens</div>
           </div>
         </div>
-
       </nav>
     </aside>
 
@@ -169,7 +167,9 @@
   </div>
 
   <script src="../assets/js/mobile.js"></script>
-  <script src="../assets/js/telassindico/sindico_morador.js"></script>
+  <script src="../assets/js/telassindico/morador/apiMoradores.js"></script>
+  <script src="../assets/js/telassindico/morador/telasMoradores.js"></script>
+  <script src="../assets/js/telassindico/morador/main.js"></script>
   <script src="../assets/js/telassindico/sindico_visitante.js"></script>
   <script src="../assets/js/telassindico/sindico_veiculos.js"></script>
   <script src="../assets/js/telassindico/sindico_areas.js"></script>
