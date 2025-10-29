@@ -1,3 +1,6 @@
+// ------------------------
+// telasVeiculos.js
+// ------------------------
 const telasVeiculos = {
   "Cadastro de veículos de moradores": `
     <div class="content-top">
@@ -21,22 +24,13 @@ const telasVeiculos = {
         </div>
 
         <div class="form-group">
-          <label>Vaga</label>
-          <input type="text" name="vaga" placeholder="Ex: V01">
+          <label>Bloco</label>
+          <input type="text" name="bloco" placeholder="Ex: A" required>
         </div>
 
         <div class="form-group">
-          <label>Associar a</label>
-          <select name="tipo_vinculo" required>
-            <option value="">Selecione...</option>
-            <option value="morador">Morador</option>
-            <option value="visitante">Visitante</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>ID do Morador / Visitante</label>
-          <input type="number" name="id_vinculo" placeholder="Digite o ID">
+          <label>Apartamento</label>
+          <input type="number" name="apartamento" placeholder="Ex: 101" required>
         </div>
 
         <div class="form-actions">
@@ -55,10 +49,11 @@ const telasVeiculos = {
       <div class="historico-container">
         <!-- Filtros -->
         <div class="historico-filtros">
-          <input type="text" placeholder="Placa">
-          <input type="text" placeholder="Modelo">
-          <input type="text" placeholder="Cor">
-          <button class="btn-buscar"><i class="fa fa-search"></i> Buscar</button>
+          <input type="text" id="filtroPlaca" placeholder="Placa">
+          <input type="text" id="filtroModelo" placeholder="Modelo">
+          <input type="text" id="filtroCor" placeholder="Cor">
+          <button class="btn-buscar" id="btnBuscarVeiculos"><i class="fa fa-search"></i> Buscar</button>
+          <button class="btn-limpar" id="btnLimparVeiculos">Limpar</button>
         </div>
 
         <!-- Tabela -->
@@ -69,36 +64,19 @@ const telasVeiculos = {
                 <th>Placa</th>
                 <th>Modelo</th>
                 <th>Cor</th>
-                <th>Vaga</th>
-                <th>Vinculado a</th>
+                <th>Bloco</th>
+                <th>Apartamento</th>
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>ABC-1234</td>
-                <td>Corolla</td>
-                <td>Preto</td>
-                <td>V01</td>
-                <td>Morador #1</td>
-                <td>
-                  <button class="btn-editar">Editar</button>
-                  <button class="btn-excluir">Excluir</button>
-                </td>
-              </tr>
-              <tr>
-                <td>XYZ-9876</td>
-                <td>Onix</td>
-                <td>Branco</td>
-                <td>V05</td>
-                <td>Visitante #2</td>
-                <td>
-                  <button class="btn-editar">Editar</button>
-                  <button class="btn-excluir">Excluir</button>
-                </td>
-              </tr>
+            <tbody id="tabelaVeiculosBody">
+              <!-- Linhas serão inseridas dinamicamente -->
             </tbody>
           </table>
+        </div>
+
+        <div id="loadingVeiculos" style="display:none;text-align:center;padding:20px;">
+          Carregando veículos...
         </div>
       </div>
     </div>
