@@ -6,6 +6,7 @@ const telas = {
   moradores: typeof telasMoradores !== "undefined" ? telasMoradores : {},
   visitantes: typeof telasVisitantes !== "undefined" ? telasVisitantes : {},
   veiculos: typeof telasVeiculos !== "undefined" ? telasVeiculos : {},
+  entregas: typeof telasEntregas !== "undefined" ? telasEntregas : {},
   areas: typeof telasAreas !== "undefined" ? telasAreas : {},
   financeiro: typeof telasFinanceiro !== "undefined" ? telasFinanceiro : {},
   ocorrencias: typeof telasOcorrencias !== "undefined" ? telasOcorrencias : {},
