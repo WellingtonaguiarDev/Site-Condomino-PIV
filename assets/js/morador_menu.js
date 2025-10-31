@@ -5,7 +5,7 @@ const content = document.querySelector(".content");
 const telasMorador = {
   meusDados: typeof telasMeusDados !== "undefined" ? telasMeusDados : {},
   financeiro: typeof telasFinanceiroMorador !== "undefined" ? telasFinanceiroMorador : {},
-  areas: typeof telasAreasMorador !== "undefined" ? telasAreasMorador : {},
+  areas: typeof telasReservas !== "undefined" ? telasReservas : {},
   ocorrencias: typeof telasOcorrenciasMorador !== "undefined" ? telasOcorrenciasMorador : {},
   comunicados: typeof telasComunicadosMorador !== "undefined" ? telasComunicadosMorador : {},
   mensagens: typeof telasMensagensMorador !== "undefined" ? telasMensagensMorador : {}

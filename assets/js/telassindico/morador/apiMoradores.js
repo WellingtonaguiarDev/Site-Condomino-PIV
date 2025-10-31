@@ -1,4 +1,6 @@
+// ------------------------
 // apiMoradores.js
+// ------------------------
 const API_URL_MORADORES = "https://api.porttusmart.tech/api/v1/core/residents-admin/";
 
 async function criarMorador(dados) {
@@ -73,9 +75,9 @@ async function deletarMorador(id) {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) throw new Error(await res.text());
-    alert("Morador deletado!");
+    alert("Morador excluído com sucesso!");
   } catch (err) {
-    alert("Erro ao deletar morador: " + err.message);
+    alert("Erro ao excluir morador: " + err.message);
     console.error(err);
   }
 }

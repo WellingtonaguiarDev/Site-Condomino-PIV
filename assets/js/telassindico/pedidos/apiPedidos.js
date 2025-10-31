@@ -13,15 +13,13 @@ async function criarEntrega(dados) {
   formData.append("apartment_block", dados.bloco);
 
   if (dados.assinatura) {
-    formData.append("signature_image", dados.assinatura); // envia o arquivo real
+    formData.append("signature_image", dados.assinatura);
   }
 
   try {
     const res = await fetch(API_URL_ENTREGAS, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
+      headers: { Authorization: `Bearer ${token}` },
       body: formData
     });
 
