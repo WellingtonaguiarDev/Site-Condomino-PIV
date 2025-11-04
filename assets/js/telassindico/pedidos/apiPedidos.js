@@ -5,10 +5,17 @@ const API_URL_ENTREGAS = "https://api.porttusmart.tech/api/v1/core/orders/";
 
 async function criarEntrega(dados) {
   const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  if (!condominio?.code_condominium) {
+    alert("Selecione um condomínio antes de cadastrar a entrega.");
+    return;
+  }
 
   const formData = new FormData();
   formData.append("order_code", dados.codigo);
   formData.append("status", "recebido");
+  formData.append("code_condominium", condominio.code_condominium);
   formData.append("apartment_number", Number(dados.apartamento));
   formData.append("apartment_block", dados.bloco);
 

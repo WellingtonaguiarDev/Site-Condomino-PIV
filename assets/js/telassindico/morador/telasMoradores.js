@@ -19,6 +19,11 @@ const telasMoradores = {
         </div>
 
         <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="exemplo@dominio.com">
+        </div>
+
+        <div class="form-group">
           <label>Telefone</label>
           <input type="tel" name="telefone" placeholder="(00) 00000-0000" required>
         </div>

@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel Gestor</title>
   <link rel="stylesheet" href="../assets/css/homesindico.css" />
   <link rel="stylesheet" href="../assets/css/sindico_morador.css" />
 </head>
+
 <body>
 
   <!-- Header / Topbar -->
-<header class="topbar">
-  <div class="topbar-left">
-    <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
-    <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
-  </div>
-
-  <div class="topbar-right">
-    <button class="icon-btn" aria-label="buscar">🔍</button>
-
-    <!-- 🔔 Notificações -->
-    <div class="notification-wrapper">
-      <button id="notification-bell" class="icon-btn" aria-label="notificações">
-        🔔
-        <div id="notification-count"></div>
-      </button>
-      <div id="notification-dropdown" class="notification-dropdown">
-        <p class="no-notifications">Nenhuma nova solicitação.</p>
-      </div>
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
+      <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
     </div>
 
-    <!-- ⋮ Menu -->
-    <button class="icon-btn" aria-label="menu" id="menuButton">⋮</button>
-  </div>
+    <div class="topbar-right">
+      <button class="icon-btn" aria-label="buscar">🔍</button>
 
-  <!-- Caixa de opções (menu suspenso) -->
-  <div class="menu-dropdown" id="menuDropdown">
-    <a href="#">Perfil</a>
-    <a href="#">Configurações</a>
-    <a href="../pages/logout.html" id="logoutBtn">Sair</a>
-  </div>
-</header>
+      <!-- 🔔 Notificações -->
+      <div class="notification-wrapper">
+        <button id="notification-bell" class="icon-btn" aria-label="notificações">
+          🔔
+          <div id="notification-count"></div>
+        </button>
+        <div id="notification-dropdown" class="notification-dropdown">
+          <p class="no-notifications">Nenhuma nova solicitação.</p>
+        </div>
+      </div>
+
+      <!-- ⋮ Menu -->
+      <button class="icon-btn" aria-label="menu" id="menuButton">⋮</button>
+    </div>
+
+    <!-- Caixa de opções (menu suspenso) -->
+    <div class="menu-dropdown" id="menuDropdown">
+      <a href="#">Perfil</a>
+      <a href="#">Configurações</a>
+      <a href="../pages/logout.html" id="logoutBtn">Sair</a>
+    </div>
+  </header>
 
   <!-- Área principal (sidebar + conteúdo) -->
   <div class="main">
@@ -59,7 +61,7 @@
 
       <!-- Menu rolável (itens restantes com submenus) -->
       <nav class="menu-scroll" aria-label="menu principal">
-        <div class="menu-item">
+        <div class="menu-item" id="menuMoradores">
           <input type="checkbox" id="moradores-toggle" />
           <label for="moradores-toggle" class="item">Moradores ▾</label>
           <div class="submenu moradores">
@@ -68,7 +70,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuVisitantes">
           <input type="checkbox" id="visitantes-toggle" />
           <label for="visitantes-toggle" class="item">Visitantes ▾</label>
           <div class="submenu">
@@ -77,7 +79,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuVeiculos">
           <input type="checkbox" id="veiculos-toggle" />
           <label for="veiculos-toggle" class="item">Veículos ▾</label>
           <div class="submenu">
@@ -86,8 +88,7 @@
           </div>
         </div>
 
-        <!-- 🚚 Novo menu: Entregas -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuEntregas">
           <input type="checkbox" id="entregas-toggle" />
           <label for="entregas-toggle" class="item">Entregas ▾</label>
           <div class="submenu">
@@ -96,7 +97,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuReservas">
           <input type="checkbox" id="areas-toggle" />
           <label for="areas-toggle" class="item">Áreas Comuns ▾</label>
           <div class="submenu">
@@ -105,9 +106,7 @@
           </div>
         </div>
 
-
-
-        <div class="menu-item">
+        <div class="menu-item" id="menuFinanceiro">
           <input type="checkbox" id="financeiro-toggle" />
           <label for="financeiro-toggle" class="item">Financeiro ▾</label>
           <div class="submenu">
@@ -115,7 +114,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuOcorrencias">
           <input type="checkbox" id="ocorrencias-toggle" />
           <label for="ocorrencias-toggle" class="item">Ocorrências / Manutenção ▾</label>
           <div class="submenu">
@@ -124,7 +123,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuComunicados">
           <input type="checkbox" id="comunicados-toggle" />
           <label for="comunicados-toggle" class="item">Comunicados / Documentos ▾</label>
           <div class="submenu">
@@ -134,7 +133,7 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuRelatorios">
           <input type="checkbox" id="relatorios-toggle" />
           <label for="relatorios-toggle" class="item">Relatórios / Estatísticas ▾</label>
           <div class="submenu">
@@ -143,13 +142,14 @@
           </div>
         </div>
 
-        <div class="menu-item">
+        <div class="menu-item" id="menuMensagens">
           <input type="checkbox" id="mensagens-toggle" />
           <label for="mensagens-toggle" class="item">Mensagens / Reclamações ▾</label>
           <div class="submenu">
             <div class="subitem">Caixa de mensagens</div>
           </div>
         </div>
+
       </nav>
     </aside>
 
@@ -157,7 +157,8 @@
     <main class="content">
       <div class="content-top">
         <h1>Facilitamos a vida de administradores, síndicos profissionais e condôminos.</h1>
-        <p class="lead">Utilizamos a mais moderna tecnologia em nuvem e as melhores ferramentas para atender melhor todos os tipos de condomínios.</p>
+        <p class="lead">Utilizamos a mais moderna tecnologia em nuvem e as melhores ferramentas para atender melhor
+          todos os tipos de condomínios.</p>
       </div>
 
       <!-- Cards no rodapé da área de conteúdo -->
@@ -186,7 +187,9 @@
   <script src="../assets/js/telassindico/morador/main.js"></script>
 
   <!-- 🚚 Scripts do módulo de Visitantes -->
-  <script src="../assets/js/telassindico/sindico_visitante.js"></script>
+  <script src="../assets/js/telassindico/visitante/apiVisitante.js"></script>
+  <script src="../assets/js/telassindico/visitante/telasVisitante.js"></script>
+  <script src="../assets/js/telassindico/visitante/main.js"></script>
 
   <!-- 🚚 Scripts do módulo de Veiculos -->
   <script src="../assets/js/telassindico/veiculos/apiVeiculos.js"></script>
@@ -202,7 +205,7 @@
   <script src="../assets/js/telassindico/reservas/apiReservas.js"></script>
   <script src="../assets/js/telassindico/reservas/telasReservas.js"></script>
   <script src="../assets/js/telassindico/reservas/main.js"></script>
-  
+
   <script src="../assets/js/telassindico/sindico_financeiro.js"></script>
   <script src="../assets/js/telassindico/sindico_ocorrencia.js"></script>
   <script src="../assets/js/telassindico/sindico_comunicados.js"></script>
@@ -213,20 +216,20 @@
   <script src="../assets/js/sindico_condominios.js"></script>
   <script src="../assets/js/sindico_notificacoes.js"></script>
 
-   <!-- Script do menu suspenso -->
+  <!-- Script do menu suspenso -->
   <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
       const menuButton = document.getElementById("menuButton");
       const dropdown = document.getElementById("menuDropdown");
 
       // Abre/fecha menu ao clicar nos três pontos
-      menuButton.addEventListener("click", function(e) {
+      menuButton.addEventListener("click", function (e) {
         e.stopPropagation();
         dropdown.classList.toggle("menu-open");
       });
 
       // Fecha o menu ao clicar fora
-      document.addEventListener("click", function(e) {
+      document.addEventListener("click", function (e) {
         if (!dropdown.contains(e.target) && e.target !== menuButton) {
           dropdown.classList.remove("menu-open");
         }
@@ -234,4 +237,5 @@
     });
   </script>
 </body>
+
 </html>

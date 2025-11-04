@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // remove listener antigo se existir
     if (entregasTbodyListener) {
-      try { tbody.removeEventListener("click", entregasTbodyListener); } catch (err) {}
+      try { tbody.removeEventListener("click", entregasTbodyListener); } catch (err) { }
       entregasTbodyListener = null;
     }
 
@@ -121,13 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // --- Navegação pelo menu (isolada) ---
-  const menu = document.querySelector(".menu-scroll");
+  const menu = document.querySelector("#menuEntregas");
   if (menu) {
     menu.addEventListener("click", (e) => {
       if (!e.target.classList.contains("subitem")) return;
       const item = e.target.textContent.trim();
+
       if (item === "Cadastro de entregas") carregarCadastro();
       if (item === "Histórico de entregas") carregarHistorico();
     });
   }
+
 });

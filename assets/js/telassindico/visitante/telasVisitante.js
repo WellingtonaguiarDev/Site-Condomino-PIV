@@ -1,32 +1,31 @@
 // ------------------------
-// telasEntregas.js
+// telaVisitante.js
 // ------------------------
-const telasEntregas = {
-  "Cadastro de entregas": `
+const telasVisitantes = {
+  "Cadastro de visitantes": `
     <div class="content-top">
-      <h1>Cadastro de Entregas</h1>
-      <p class="lead">Registre novas entregas recebidas na portaria.</p>
+      <h1>Cadastro de Visitantes</h1>
+      <p class="lead">Preencha os dados abaixo para cadastrar um novo visitante.</p>
 
-      <form class="form-cadastro-entrega">
+      <form class="form-cadastro">
         <div class="form-group">
-          <label>Código da entrega</label>
-          <input type="text" name="codigo" placeholder="Ex: PED12345" required>
+          <label>Nome completo</label>
+          <input type="text" name="nome" placeholder="Nome completo" required>
+        </div>
+
+        <div class="form-group">
+          <label>CPF</label>
+          <input type="text" name="cpf" placeholder="000.000.000-00" required>
         </div>
 
         <div class="form-group">
           <label>Bloco</label>
-          <input type="text" name="bloco" placeholder="Ex: A" required>
+          <input type="text" name="bloco" placeholder="Bloco">
         </div>
 
         <div class="form-group">
           <label>Apartamento</label>
-          <input type="number" name="apartamento" placeholder="Ex: 101" required>
-        </div>
-
-        <div class="form-group">
-          <label>Foto ou Assinatura</label>
-          <input type="file" name="assinatura" accept="image/*">
-          <small>Selecione uma imagem (assinatura ou comprovante)</small>
+          <input type="text" name="apartamento" placeholder="Número do apartamento">
         </div>
 
         <div class="form-actions">
@@ -37,14 +36,13 @@ const telasEntregas = {
     </div>
   `,
 
-  "Histórico de entregas": `
+  "Controle de entradas e saídas": `
     <div class="content-top">
-      <h1>Histórico de Entregas</h1>
-      <p class="lead">Acompanhe as entregas registradas no condomínio.</p>
+      <h1>Controle de Entradas e Saídas</h1>
+      <p class="lead">Lista de visitantes cadastrados e controle de acessos.</p>
 
       <div class="historico-container">
-        <!-- Filtros -->
-        <div class="historico-filtros" style="margin-bottom:15px;">
+        <div class="historico-filtros">
           <select id="filtroBloco">
             <option value="">Filtrar por bloco</option>
             <option value="blocoA">Bloco A</option>
@@ -66,21 +64,17 @@ const telasEntregas = {
           <table class="tabela-historico">
             <thead>
               <tr>
-                <th>Código</th>
-                <th>Status</th>
+                <th>Nome</th>
                 <th>Bloco</th>
                 <th>Apartamento</th>
+                <th>CPF</th>
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody id="tabelaEntregasBody">
-              <!-- Linhas preenchidas dinamicamente -->
+            <tbody id="visitantesTableBody">
+              <!-- Visitantes serão carregados aqui -->
             </tbody>
           </table>
-        </div>
-
-        <div id="loadingEntregas" style="display:none;text-align:center;padding:20px;">
-          Carregando entregas...
         </div>
       </div>
     </div>

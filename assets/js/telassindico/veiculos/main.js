@@ -1,5 +1,5 @@
 // ------------------------
-// mainVeiculos.js (versão isolada - padrão reservas)
+// mainVeiculos.js (versão corrigida - isolada por tela)
 // ------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
@@ -10,9 +10,10 @@ document.addEventListener("DOMContentLoaded", () => {
   async function carregarCadastro(veiculo = null) {
     content.innerHTML = telasVeiculos["Cadastro de veículos de moradores"];
 
-    if (veiculo) {
-      const form = content.querySelector(".form-cadastro");
+    const form = content.querySelector(".form-cadastro");
+    if (!form) return;
 
+    if (veiculo) {
       const bloco = veiculo.owner?.apartment?.block || veiculo.apartment_details?.block || "";
       const apartamento = veiculo.owner?.apartment?.number || veiculo.apartment_details?.number || "";
 
@@ -26,13 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
       const btnSalvar = form.querySelector(".btn-salvar");
       if (btnSalvar) btnSalvar.textContent = "Atualizar";
     } else {
-      // garante texto padrão do botão quando não estiver editando
-      const form = content.querySelector(".form-cadastro");
-      if (form) {
-        const btnSalvar = form.querySelector(".btn-salvar");
-        if (btnSalvar) btnSalvar.textContent = "Salvar";
-        delete form.dataset.id;
-      }
+      const btnSalvar = form.querySelector(".btn-salvar");
+      if (btnSalvar) btnSalvar.textContent = "Salvar";
+      delete form.dataset.id;
     }
   }
 
@@ -64,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .join("");
 
-    // associe o listener local ao tbody (remove o antigo antes)
     attachVeiculosTableListener();
   }
 
@@ -73,14 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = content.querySelector("tbody");
     if (!tbody) return;
 
-    // remove listener antigo se existir
     if (veiculosTbodyListener) {
-      try { tbody.removeEventListener("click", veiculosTbodyListener); } catch (err) {}
+      try { tbody.removeEventListener("click", veiculosTbodyListener); } catch (err) { }
       veiculosTbodyListener = null;
     }
 
     veiculosTbodyListener = async function (e) {
-      // botão Excluir dentro da tabela?
       const btnExcluir = e.target.closest(".btn-excluir");
       if (btnExcluir && tbody.contains(btnExcluir)) {
         e.stopPropagation();
@@ -98,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // botão Editar dentro da tabela?
       const btnEditar = e.target.closest(".btn-editar");
       if (btnEditar && tbody.contains(btnEditar)) {
         e.stopPropagation();
@@ -123,10 +116,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Submissão do formulário (criar ou atualizar) ---
   content.addEventListener("submit", async (e) => {
-    if (!e.target.classList.contains("form-cadastro")) return;
+    const form = e.target;
+
+    // ✅ só executa se for o formulário de veículos
+    if (
+      !form.classList.contains("form-cadastro") ||
+      !form.placa || !form.modelo || !form.cor
+    ) return;
+
     e.preventDefault();
 
-    const form = e.target;
     const dados = {
       placa: form.placa?.value.trim() || "",
       modelo: form.modelo?.value.trim() || "",
@@ -149,12 +148,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- Navegação do menu (mantendo nomes existentes) ---
-  const menu = document.querySelector(".menu-scroll");
+  // --- Navegação do menu ---
+  const menu = document.querySelector("#menuVeiculos");
   if (menu) {
     menu.addEventListener("click", (e) => {
       if (!e.target.classList.contains("subitem")) return;
       const item = e.target.textContent.trim();
+
       if (item === "Cadastro de veículos de moradores") {
         veiculoEditando = null;
         carregarCadastro();
@@ -162,4 +162,5 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item === "Histórico de veículos") carregarHistorico();
     });
   }
+
 });

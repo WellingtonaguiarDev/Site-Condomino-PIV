@@ -1,33 +1,29 @@
 // ------------------------
-// mainMoradores.js (corrigido e isolado)
+// mainMoradores.js (versão final e isolada)
 // ------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let moradoresTbodyListener = null;
 
-  // --- Renderização de telas ---
   async function carregarCadastro(morador = null) {
     content.innerHTML = telasMoradores["Cadastro de moradores"];
 
-    if (morador) {
-      const form = content.querySelector(".form-cadastro");
-      if (!form) return;
+    const form = content.querySelector(".form-cadastro");
+    if (!form) return;
 
+    if (morador) {
       form.nome.value = morador.name || "";
       form.cpf.value = morador.cpf || "";
       form.telefone.value = morador.phone || "";
       form.bloco.value =
-        morador.registered_by?.apartment?.block ||
-        morador.apartment_details?.block ||
-        "";
+        morador.apartment?.block || morador.apartment_details?.block || "";
       form.apartamento.value =
-        morador.registered_by?.apartment?.number ||
-        morador.apartment_details?.number ||
-        "";
+        morador.apartment?.number || morador.apartment_details?.number || "";
+      form.email.value = morador.email || "";
       form.dataset.id = morador.id;
     } else {
-      const form = content.querySelector(".form-cadastro");
-      if (form) form.removeAttribute("data-id");
+      form.reset();
+      form.removeAttribute("data-id");
     }
   }
 
@@ -43,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
         (m) => `
         <tr>
           <td>${m.name || "-"}</td>
-          <td>${m.registered_by?.apartment?.block || "-"}</td>
-          <td>${m.registered_by?.apartment?.number || "-"}</td>
+          <td>${m.apartment?.block || "-"}</td>
+          <td>${m.apartment?.number || "-"}</td>
           <td>${m.phone || "-"}</td>
           <td>
             <button class="btn-editar" data-id="${m.id}">Editar</button>
@@ -58,14 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
     attachMoradoresTableListener();
   }
 
-  // Listener isolado do tbody
   function attachMoradoresTableListener() {
     const tbody = content.querySelector("#tabelaMoradoresBody");
     if (!tbody) return;
 
-    // Remove o antigo, se existir
     if (moradoresTbodyListener) {
-      try { tbody.removeEventListener("click", moradoresTbodyListener); } catch {}
+      try { tbody.removeEventListener("click", moradoresTbodyListener); } catch { }
       moradoresTbodyListener = null;
     }
 
@@ -73,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const btnEditar = e.target.closest(".btn-editar");
       const btnExcluir = e.target.closest(".btn-excluir");
 
-      if (btnEditar && tbody.contains(btnEditar)) {
+      if (btnEditar) {
         e.stopPropagation();
         const id = btnEditar.dataset.id;
         const moradores = await listarMoradores();
@@ -82,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      if (btnExcluir && tbody.contains(btnExcluir)) {
+      if (btnExcluir) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este morador?")) {
@@ -96,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", moradoresTbodyListener);
   }
 
-  // --- Evento de envio de formulário ---
   content.addEventListener("submit", async (e) => {
     if (!e.target.classList.contains("form-cadastro")) return;
     e.preventDefault();
@@ -108,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
       telefone: form.telefone.value.trim(),
       bloco: form.bloco.value.trim(),
       apartamento: form.apartamento.value.trim(),
+      email: form.email?.value.trim() || ""
     };
 
     try {
@@ -117,14 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
         await criarMorador(dados);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Erro ao salvar morador:", err);
     } finally {
       await carregarHistorico();
     }
   });
 
-  // --- Navegação pelo menu ---
-  const menu = document.querySelector(".menu-scroll");
+  const menu = document.querySelector("#menuMoradores");
   if (menu) {
     menu.addEventListener("click", (e) => {
       if (!e.target.classList.contains("subitem")) return;
@@ -134,4 +127,5 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item === "Histórico de moradores") carregarHistorico();
     });
   }
+
 });

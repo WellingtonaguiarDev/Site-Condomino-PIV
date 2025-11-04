@@ -9,22 +9,20 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = telasReservas["Cadastro de reservas"];
 
     if (reserva) {
-      const form = content.querySelector(".form-cadastro");
-      form.local.value = reserva.local_name || "";
-      form.data.value = reserva.start_time
+      const form = content.querySelector(".form-cadastro-reserva");
+      form.space.value = reserva.space || "";
+      form.data_reserva.value = reserva.start_time
         ? new Date(reserva.start_time).toISOString().split("T")[0]
         : "";
-      form.horaInicio.value = reserva.start_time
+      form.hora_inicio.value = reserva.start_time
         ? new Date(reserva.start_time).toISOString().substring(11, 16)
         : "";
-      form.horaFim.value = reserva.end_time
+      form.hora_fim.value = reserva.end_time
         ? new Date(reserva.end_time).toISOString().substring(11, 16)
         : "";
 
-      const bloco = reserva.owner?.apartment?.block || "-";
-      const apartamento = reserva.owner?.apartment?.number || "-";
-      form.bloco.value = bloco;
-      form.apartamento.value = apartamento;
+      form.apartment_block.value = reserva.apartment_block || "-";
+      form.apartment_code.value = reserva.apartment_code || "-";
 
       form.dataset.id = reserva.id;
     }
@@ -35,39 +33,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = content.querySelector("#tabelaReservasBody");
     const reservas = await listarReservas();
 
-    // 🔍 DEBUG: mostrar as informações retornadas pelo backend
-    console.log("======================================");
-    console.log("DEBUG - Reservas retornadas do backend:");
-    console.log(reservas);
-    console.log("======================================");
-
-    // Debug individual de cada reserva (pra ver estrutura detalhada)
-    reservas.forEach((r, i) => {
-      console.log(`Reserva [${i + 1}] -> ID: ${r.id}`);
-      console.log("Local:", r.local_name);
-      console.log("Início:", r.start_time);
-      console.log("Fim:", r.end_time);
-      console.log("Owner:", r.owner);
-      console.log("Apartamento:", r.owner?.apartment);
-      console.log("--------------------------------------");
-    });
-
     tbody.innerHTML = reservas
       .map((r) => {
-        const local = r.local_name || "-";
+        const espaco = r.space || "-";
         const dataInicio = new Date(r.start_time).toLocaleString("pt-BR");
         const dataFim = new Date(r.end_time).toLocaleString("pt-BR");
 
-        const bloco = r.owner?.apartment?.block || "-";
-        const apartamento = r.owner?.apartment?.number || "-";
+        const bloco = r.resident?.apartment?.block || "-";
+        const apartamento = r.resident?.apartment?.number || "-";
 
         return `
           <tr>
-            <td>${local}</td>
-            <td>${dataInicio}</td>
-            <td>${dataFim}</td>
+            <td>${espaco}</td>
             <td>${bloco}</td>
             <td>${apartamento}</td>
+            <td>${dataInicio}</td>
+            <td>${dataFim}</td>
             <td>
               <button class="btn-editar" data-id="${r.id}">Editar</button>
               <button class="btn-excluir" data-id="${r.id}">Excluir</button>
@@ -80,15 +61,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Eventos de formulário ---
   content.addEventListener("submit", async (e) => {
-    if (!e.target.classList.contains("form-cadastro")) return;
+    if (!e.target.classList.contains("form-cadastro-reserva")) return;
     e.preventDefault();
 
     const form = e.target;
     const dados = {
-      local: form.local.value.trim(),
-      data: form.data.value,
-      horaInicio: form.horaInicio.value,
-      horaFim: form.horaFim.value,
+      space: form.space.value.trim(),
+      apartment_block: form.apartment_block.value.trim(),
+      apartment_code: form.apartment_code.value.trim(),
+      data: form.data_reserva.value,
+      horaInicio: form.hora_inicio.value,
+      horaFim: form.hora_fim.value,
     };
 
     if (form.dataset.id) {
@@ -118,12 +101,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // --- Navegação pelo menu ---
-  document.querySelector("#menuReservas").addEventListener("click", (e) => {
-    if (!e.target.classList.contains("subitem")) return;
+  // --- Navegação pelo menu (isolada) ---
+  const menuReservas = document.querySelector("#menuReservas");
+  if (menuReservas) {
+    menuReservas.addEventListener("click", (e) => {
+      if (!e.target.classList.contains("subitem")) return;
 
-    const item = e.target.textContent.trim();
-    if (item === "Reserva de espaços") carregarCadastro();
-    if (item === "Agenda de uso") carregarHistorico();
-  });
+      const item = e.target.textContent.trim();
+      if (item === "Cadastro de reservas") carregarCadastro();
+      if (item === "Histórico de reservas") carregarHistorico();
+    });
+  }
 });

@@ -1,10 +1,16 @@
 // ------------------------
 // apiReservas.js
 // ------------------------
-const API_URL_RESERVAS = "https://api.porttusmart.tech/api/v1/core/reservations-admin/";
+const API_URL_RESERVAS = "https://api.porttusmart.tech/api/v1/core/reservations/";
 
 async function criarReserva(dados) {
   const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  if (!condominio?.code_condominium) {
+    alert("Selecione um condomínio antes de cadastrar a reserva.");
+    return;
+  }
 
   // Monta os horários completos no formato ISO UTC
   const start_time = `${dados.data}T${dados.horaInicio}:00Z`;
@@ -13,7 +19,8 @@ async function criarReserva(dados) {
   const payload = {
     space: dados.space,
     apartment_block: dados.apartment_block,
-    apartment_code: dados.apartment_code,
+    apartment_number: dados.apartment_code, 
+    code_condominium: condominio.code_condominium,
     start_time,
     end_time,
   };
@@ -73,6 +80,12 @@ async function deletarReserva(id) {
 
 async function atualizarReserva(id, dados) {
   const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  if (!condominio?.code_condominium) {
+    alert("Selecione um condomínio antes de atualizar a reserva.");
+    return;
+  }
 
   const start_time = `${dados.data}T${dados.horaInicio}:00Z`;
   const end_time = `${dados.data}T${dados.horaFim}:00Z`;
@@ -80,7 +93,8 @@ async function atualizarReserva(id, dados) {
   const payload = {
     space: dados.space,
     apartment_block: dados.apartment_block,
-    apartment_code: dados.apartment_code,
+    apartment_number: dados.apartment_code,
+    code_condominium: condominio.code_condominium,
     start_time,
     end_time,
   };
