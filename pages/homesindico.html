@@ -6,7 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel Gestor</title>
   <link rel="stylesheet" href="../assets/css/homesindico.css" />
-  <link rel="stylesheet" href="../assets/css/sindico_morador.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_morador.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_visitante.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_veiculo.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_pedido.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_reserva.css" />
+  <link rel="stylesheet" href="../assets/css//telassindico/sindico_comunicado.css" />
 </head>
 
 <body>
@@ -133,15 +138,6 @@
           </div>
         </div>
 
-        <div class="menu-item" id="menuRelatorios">
-          <input type="checkbox" id="relatorios-toggle" />
-          <label for="relatorios-toggle" class="item">Relatórios / Estatísticas ▾</label>
-          <div class="submenu">
-            <div class="subitem">Relatórios financeiros</div>
-            <div class="subitem">Relatórios de manutenção</div>
-          </div>
-        </div>
-
         <div class="menu-item" id="menuMensagens">
           <input type="checkbox" id="mensagens-toggle" />
           <label for="mensagens-toggle" class="item">Mensagens / Reclamações ▾</label>
@@ -208,8 +204,12 @@
 
   <script src="../assets/js/telassindico/sindico_financeiro.js"></script>
   <script src="../assets/js/telassindico/sindico_ocorrencia.js"></script>
-  <script src="../assets/js/telassindico/sindico_comunicados.js"></script>
-  <script src="../assets/js/telassindico/sindico_relatorios.js"></script>
+
+    <!-- 🚚 Scripts do módulo de Comunicados -->
+  <script src="../assets/js/telassindico/comunicados/apiComunicados.js"></script>
+  <script src="../assets/js/telassindico/comunicados/telasComunidados.js"></script>
+  <script src="../assets/js/telassindico/comunicados/main.js"></script>
+
   <script src="../assets/js/telassindico/sindico_mensagens.js"></script>
   <script src="../assets/js/sindico_menu.js"></script>
   <script src="../assets/js/logout.js"></script>

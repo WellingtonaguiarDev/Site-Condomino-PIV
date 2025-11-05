@@ -1,6 +1,6 @@
-// ------------------------
-// telasEntregas.js
-// ------------------------
+// =============================
+// ===== TELAS ENTREGAS =====
+// =============================
 const telasEntregas = {
   "Cadastro de entregas": `
     <div class="content-top">
@@ -8,30 +8,30 @@ const telasEntregas = {
       <p class="lead">Registre novas entregas recebidas na portaria.</p>
 
       <form class="form-cadastro-entrega">
-        <div class="form-group">
+        <div class="form-group-entrega">
           <label>Código da entrega</label>
           <input type="text" name="codigo" placeholder="Ex: PED12345" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-entrega">
           <label>Bloco</label>
           <input type="text" name="bloco" placeholder="Ex: A" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-entrega">
           <label>Apartamento</label>
           <input type="number" name="apartamento" placeholder="Ex: 101" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-entrega">
           <label>Foto ou Assinatura</label>
           <input type="file" name="assinatura" accept="image/*">
           <small>Selecione uma imagem (assinatura ou comprovante)</small>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-salvar">Salvar</button>
-          <button type="reset" class="btn-cancelar">Cancelar</button>
+        <div class="form-actions-entrega">
+          <button type="submit" class="btn-salvar-entrega">Salvar</button>
+          <button type="reset" class="btn-cancelar-entrega">Cancelar</button>
         </div>
       </form>
     </div>
@@ -42,28 +42,27 @@ const telasEntregas = {
       <h1>Histórico de Entregas</h1>
       <p class="lead">Acompanhe as entregas registradas no condomínio.</p>
 
-      <div class="historico-container">
-        <!-- Filtros -->
-        <div class="historico-filtros" style="margin-bottom:15px;">
-          <select id="filtroBloco">
+      <div class="historico-container-entrega">
+        <div class="historico-filtros-entrega" style="margin-bottom:15px;">
+          <select id="filtroBlocoEntrega">
             <option value="">Filtrar por bloco</option>
             <option value="blocoA">Bloco A</option>
             <option value="blocoB">Bloco B</option>
           </select>
 
-          <select id="filtroApartamento">
+          <select id="filtroApartamentoEntrega">
             <option value="">Filtrar por apartamento</option>
             <option value="101">101</option>
             <option value="102">102</option>
           </select>
 
-          <input type="text" placeholder="Pesquisar..." id="searchInput">
-          <button class="btn-buscar" id="btnBuscar">Buscar</button>
-          <button class="btn-limpar" id="btnLimpar">Limpar</button>
+          <input type="text" placeholder="Pesquisar..." id="searchInputEntrega">
+          <button class="btn-buscar-entrega" id="btnBuscarEntrega">Buscar</button>
+          <button class="btn-limpar-entrega" id="btnLimparEntrega">Limpar</button>
         </div>
 
-        <div class="historico-tabela">
-          <table class="tabela-historico">
+        <div class="historico-tabela-entrega">
+          <table class="tabela-historico-entrega">
             <thead>
               <tr>
                 <th>Código</th>

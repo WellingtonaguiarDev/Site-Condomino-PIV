@@ -7,30 +7,30 @@ const telasVisitantes = {
       <h1>Cadastro de Visitantes</h1>
       <p class="lead">Preencha os dados abaixo para cadastrar um novo visitante.</p>
 
-      <form class="form-cadastro">
-        <div class="form-group">
+      <form class="form-cadastro-visitante">
+        <div class="form-group-visitante">
           <label>Nome completo</label>
           <input type="text" name="nome" placeholder="Nome completo" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-visitante">
           <label>CPF</label>
           <input type="text" name="cpf" placeholder="000.000.000-00" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-visitante">
           <label>Bloco</label>
           <input type="text" name="bloco" placeholder="Bloco">
         </div>
 
-        <div class="form-group">
+        <div class="form-group-visitante">
           <label>Apartamento</label>
           <input type="text" name="apartamento" placeholder="Número do apartamento">
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-salvar">Salvar</button>
-          <button type="reset" class="btn-cancelar">Cancelar</button>
+        <div class="form-actions-visitante">
+          <button type="submit" class="btn-salvar-visitante">Salvar</button>
+          <button type="reset" class="btn-cancelar-visitante">Cancelar</button>
         </div>
       </form>
     </div>
@@ -41,27 +41,27 @@ const telasVisitantes = {
       <h1>Controle de Entradas e Saídas</h1>
       <p class="lead">Lista de visitantes cadastrados e controle de acessos.</p>
 
-      <div class="historico-container">
-        <div class="historico-filtros">
-          <select id="filtroBloco">
+      <div class="historico-container-visitante">
+        <div class="historico-filtros-visitante">
+          <select id="filtroBlocoVisitante">
             <option value="">Filtrar por bloco</option>
             <option value="blocoA">Bloco A</option>
             <option value="blocoB">Bloco B</option>
           </select>
 
-          <select id="filtroApartamento">
+          <select id="filtroApartamentoVisitante">
             <option value="">Filtrar por apartamento</option>
             <option value="101">101</option>
             <option value="102">102</option>
           </select>
 
-          <input type="text" placeholder="Pesquisar..." id="searchInput">
-          <button class="btn-buscar" id="btnBuscar">Buscar</button>
-          <button class="btn-limpar" id="btnLimpar">Limpar</button>
+          <input type="text" placeholder="Pesquisar..." id="searchInputVisitante">
+          <button class="btn-buscar-visitante" id="btnBuscarVisitante">Buscar</button>
+          <button class="btn-limpar-visitante" id="btnLimparVisitante">Limpar</button>
         </div>
 
-        <div class="historico-tabela">
-          <table class="tabela-historico">
+        <div class="historico-tabela-visitante">
+          <table class="tabela-historico-visitante">
             <thead>
               <tr>
                 <th>Nome</th>

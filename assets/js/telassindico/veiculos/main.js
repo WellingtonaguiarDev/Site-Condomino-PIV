@@ -1,5 +1,5 @@
 // ------------------------
-// mainVeiculos.js (versão corrigida - isolada por tela)
+// mainVeiculos.js (versão modular com classes exclusivas)
 // ------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function carregarCadastro(veiculo = null) {
     content.innerHTML = telasVeiculos["Cadastro de veículos de moradores"];
 
-    const form = content.querySelector(".form-cadastro");
+    const form = content.querySelector(".form-cadastro-veiculo");
     if (!form) return;
 
     if (veiculo) {
@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
       form.apartamento.value = apartamento;
       form.dataset.id = veiculo.id;
 
-      const btnSalvar = form.querySelector(".btn-salvar");
+      const btnSalvar = form.querySelector(".btn-salvar-veiculo");
       if (btnSalvar) btnSalvar.textContent = "Atualizar";
     } else {
-      const btnSalvar = form.querySelector(".btn-salvar");
+      const btnSalvar = form.querySelector(".btn-salvar-veiculo");
       if (btnSalvar) btnSalvar.textContent = "Salvar";
       delete form.dataset.id;
     }
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function carregarHistorico() {
     content.innerHTML = telasVeiculos["Histórico de veículos"];
-    const tbody = content.querySelector("tbody");
+    const tbody = content.querySelector(".tabela-historico-veiculo-body");
     if (!tbody) return;
 
     const veiculos = await listarVeiculos();
@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>${bloco || "-"}</td>
             <td>${apartamento || "-"}</td>
             <td>
-              <button class="btn-editar" data-id="${v.id}">Editar</button>
-              <button class="btn-excluir" data-id="${v.id}">Excluir</button>
+              <button class="btn-editar-veiculo" data-id="${v.id}">Editar</button>
+              <button class="btn-excluir-veiculo" data-id="${v.id}">Excluir</button>
             </td>
           </tr>
         `;
@@ -64,18 +64,18 @@ document.addEventListener("DOMContentLoaded", () => {
     attachVeiculosTableListener();
   }
 
-  // --- Listener local para tabela de veículos ---
+  // --- Listener da tabela ---
   function attachVeiculosTableListener() {
-    const tbody = content.querySelector("tbody");
+    const tbody = content.querySelector(".tabela-historico-veiculo-body");
     if (!tbody) return;
 
     if (veiculosTbodyListener) {
-      try { tbody.removeEventListener("click", veiculosTbodyListener); } catch (err) { }
+      try { tbody.removeEventListener("click", veiculosTbodyListener); } catch {}
       veiculosTbodyListener = null;
     }
 
     veiculosTbodyListener = async function (e) {
-      const btnExcluir = e.target.closest(".btn-excluir");
+      const btnExcluir = e.target.closest(".btn-excluir-veiculo");
       if (btnExcluir && tbody.contains(btnExcluir)) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const btnEditar = e.target.closest(".btn-editar");
+      const btnEditar = e.target.closest(".btn-editar-veiculo");
       if (btnEditar && tbody.contains(btnEditar)) {
         e.stopPropagation();
         const id = btnEditar.dataset.id;
@@ -114,13 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", veiculosTbodyListener);
   }
 
-  // --- Submissão do formulário (criar ou atualizar) ---
+  // --- Submissão do formulário ---
   content.addEventListener("submit", async (e) => {
     const form = e.target;
 
-    // ✅ só executa se for o formulário de veículos
     if (
-      !form.classList.contains("form-cadastro") ||
+      !form.classList.contains("form-cadastro-veiculo") ||
       !form.placa || !form.modelo || !form.cor
     ) return;
 

@@ -1,14 +1,14 @@
-// ------------------------
+// ==========================================================
 // telasReservas.js
-// ------------------------
+// ==========================================================
 const telasReservas = {
   "Cadastro de reservas": `
-    <div class="content-top">
+    <div class="content-top-reserva">
       <h1>Cadastro de Reservas</h1>
-      <p class="lead">Preencha os dados abaixo para reservar um espaço.</p>
+      <p class="lead-reserva">Preencha os dados abaixo para reservar um espaço.</p>
 
       <form class="form-cadastro-reserva">
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Espaço</label>
           <select name="space" required>
             <option value="">Selecione...</option>
@@ -21,53 +21,53 @@ const telasReservas = {
           </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Bloco</label>
           <input type="text" name="apartment_block" placeholder="Bloco" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Apartamento</label>
           <input type="text" name="apartment_code" placeholder="Número do apartamento" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Data da reserva</label>
           <input type="date" name="data_reserva" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Hora de início</label>
           <input type="time" name="hora_inicio" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group-reserva">
           <label>Hora de término</label>
           <input type="time" name="hora_fim" required>
         </div>
 
-        <div class="form-actions">
-          <button type="submit" class="btn-salvar">Salvar</button>
-          <button type="reset" class="btn-cancelar">Cancelar</button>
+        <div class="form-actions-reserva">
+          <button type="submit" class="btn-salvar-reserva">Salvar</button>
+          <button type="reset" class="btn-cancelar-reserva">Cancelar</button>
         </div>
       </form>
     </div>
   `,
 
   "Histórico de reservas": `
-    <div class="content-top">
+    <div class="content-top-reserva">
       <h1>Histórico de Reservas</h1>
-      <p class="lead">Visualize todas as reservas registradas.</p>
+      <p class="lead-reserva">Visualize todas as reservas registradas.</p>
 
-      <div class="historico-container">
-        <div class="historico-filtros">
-          <input type="text" id="filtroEspaco" placeholder="Filtrar por espaço...">
-          <button class="btn-buscar" id="btnBuscarReserva">Buscar</button>
-          <button class="btn-limpar" id="btnLimparReserva">Limpar</button>
+      <div class="historico-container-reserva">
+        <div class="historico-filtros-reserva">
+          <input type="text" id="filtroEspacoReserva" placeholder="Filtrar por espaço...">
+          <button class="btn-buscar-reserva" id="btnBuscarReserva">Buscar</button>
+          <button class="btn-limpar-reserva" id="btnLimparReserva">Limpar</button>
         </div>
 
-        <div class="historico-tabela">
-          <table class="tabela-historico">
+        <div class="historico-tabela-reserva">
+          <table class="tabela-historico-reserva">
             <thead>
               <tr>
                 <th>Espaço</th>

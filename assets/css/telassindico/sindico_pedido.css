@@ -6,8 +6,11 @@
   --text-dark: #222;
 }
 
-/* ===== Cadastro ===== */
-.form-cadastro {
+/* ============================= */
+/* ===== CADASTRO ENTREGA ===== */
+/* ============================= */
+
+.form-cadastro-entrega {
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -17,18 +20,18 @@
   max-width: 800px;
 }
 
-.form-group {
+.form-group-entrega {
   display: flex;
   flex-direction: column;
 }
 
-.form-group label {
+.form-group-entrega label {
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-.form-group input,
-.form-group select {
+.form-group-entrega input,
+.form-group-entrega select {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid var(--border-color);
@@ -36,18 +39,18 @@
   color: var(--text-light);
 }
 
-.endereco-group {
+.endereco-group-entrega {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
 }
 
-.form-actions {
+.form-actions-entrega {
   display: flex;
   gap: 10px;
 }
 
-.btn-salvar {
+.btn-salvar-entrega {
   background-color: var(--accent-color);
   color: white;
   padding: 10px 15px;
@@ -56,11 +59,11 @@
   cursor: pointer;
 }
 
-.btn-salvar:hover {
+.btn-salvar-entrega:hover {
   background-color: #005a3e;
 }
 
-.btn-cancelar {
+.btn-cancelar-entrega {
   background-color: var(--warning-color);
   color: var(--text-dark);
   padding: 10px 15px;
@@ -69,12 +72,15 @@
   cursor: pointer;
 }
 
-.btn-cancelar:hover {
+.btn-cancelar-entrega:hover {
   background-color: #d8a200;
 }
 
-/* ===== Histórico ===== */
-.historico-container {
+/* ============================= */
+/* ===== HISTÓRICO ENTREGA ===== */
+/* ============================= */
+
+.historico-container-entrega {
   background: #b0b0b0;
   border-radius: 10px;
   padding: 20px;
@@ -82,15 +88,15 @@
   color: var(--text-dark); /* TEXTO PRETO */
 }
 
-.historico-filtros {
+.historico-filtros-entrega {
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
 
-.historico-filtros input,
-.historico-filtros select {
+.historico-filtros-entrega input,
+.historico-filtros-entrega select {
   padding: 8px;
   border-radius: 5px;
   border: 1px solid var(--border-color);
@@ -98,7 +104,7 @@
   color: var(--text-dark); /* TEXTO PRETO */
 }
 
-.historico-filtros button {
+.historico-filtros-entrega button {
   padding: 8px 12px;
   border-radius: 5px;
   border: none;
@@ -107,62 +113,62 @@
   cursor: pointer;
 }
 
-.historico-filtros button:hover {
+.historico-filtros-entrega button:hover {
   background-color: #005a3e;
 }
 
-.historico-tabela {
+.historico-tabela-entrega {
   background: #f0f0f0;
   padding: 20px;
   border-radius: 8px;
   color: var(--text-dark); /* TEXTO PRETO */
 }
 
-.tabela-historico {
+.tabela-historico-entrega {
   width: 100%;
   border-collapse: collapse;
   color: var(--text-dark); /* TEXTO PRETO */
 }
 
-.tabela-historico th,
-.tabela-historico td {
+.tabela-historico-entrega th,
+.tabela-historico-entrega td {
   padding: 12px;
   border-bottom: 1px solid #ddd;
   text-align: left;
   color: var(--text-dark); /* TEXTO PRETO */
 }
 
-.tabela-historico th {
+.tabela-historico-entrega th {
   background: var(--primary-color, #072241);
   color: white; /* MANTER LETRAS BRANCAS NO CABEÇALHO */
 }
 
-.tabela-historico tr:hover {
+.tabela-historico-entrega tr:hover {
   background: #eaeaea;
 }
 
-.btn-editar,
-.btn-excluir {
+.btn-editar-entrega,
+.btn-excluir-entrega {
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
-.btn-editar {
+.btn-editar-entrega {
   background-color: #007bff;
   color: white;
 }
 
-.btn-editar:hover {
+.btn-editar-entrega:hover {
   background-color: #0056b3;
 }
 
-.btn-excluir {
+.btn-excluir-entrega {
   background-color: #dc3545;
   color: white;
 }
 
-.btn-excluir:hover {
+.btn-excluir-entrega:hover {
   background-color: #a71d2a;
 }

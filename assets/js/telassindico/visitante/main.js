@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function carregarCadastro(visitante = null) {
     content.innerHTML = telasVisitantes["Cadastro de visitantes"];
 
-    const form = content.querySelector(".form-cadastro");
+    const form = content.querySelector(".form-cadastro-visitante");
     if (!form) return;
 
     if (visitante) {
@@ -41,8 +41,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${v.apartment?.number || "-"}</td>
           <td>${v.visitor?.cpf || "-"}</td>
           <td>
-            <button class="btn-editar" data-id="${v.id}">Editar</button>
-            <button class="btn-excluir" data-id="${v.id}">Excluir</button>
+            <button class="btn-editar-visitante" data-id="${v.id}">Editar</button>
+            <button class="btn-excluir-visitante" data-id="${v.id}">Excluir</button>
           </td>
         </tr>
       `
@@ -63,8 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     visitantesTbodyListener = async function (e) {
-      const btnEditar = e.target.closest(".btn-editar");
-      const btnExcluir = e.target.closest(".btn-excluir");
+      const btnEditar = e.target.closest(".btn-editar-visitante");
+      const btnExcluir = e.target.closest(".btn-excluir-visitante");
 
       if (btnEditar) {
         e.stopPropagation();
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Envio do formulário ---
   content.addEventListener("submit", async (e) => {
-    if (!e.target.classList.contains("form-cadastro")) return;
+    if (!e.target.classList.contains("form-cadastro-visitante")) return;
     e.preventDefault();
 
     const form = e.target;
@@ -115,15 +115,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-    // --- Navegação pelo menu ---
-    const menu = document.querySelector("#menuVisitantes");
-    if (menu) {
+  // --- Navegação pelo menu ---
+  const menu = document.querySelector("#menuVisitantes");
+  if (menu) {
     menu.addEventListener("click", (e) => {
-        if (!e.target.classList.contains("subitem")) return;
-        const item = e.target.textContent.trim();
+      if (!e.target.classList.contains("subitem")) return;
+      const item = e.target.textContent.trim();
 
-        if (item === "Cadastro de visitantes") carregarCadastro();
-        if (item === "Controle de entradas e saídas") carregarHistorico();
+      if (item === "Cadastro de visitantes") carregarCadastro();
+      if (item === "Controle de entradas e saídas") carregarHistorico();
     });
-    }
+  }
 });

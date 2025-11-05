@@ -1,6 +1,6 @@
-// ------------------------
-// apiEntregas.js
-// ------------------------
+// =============================
+// ===== API ENTREGAS =====
+// =============================
 const API_URL_ENTREGAS = "https://api.porttusmart.tech/api/v1/core/orders/";
 
 async function criarEntrega(dados) {

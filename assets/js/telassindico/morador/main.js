@@ -1,14 +1,14 @@
-// ------------------------
-// mainMoradores.js (versão final e isolada)
-// ------------------------
+// ==========================================================
+// mainMoradores.js
+// ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let moradoresTbodyListener = null;
 
+  // ======== Tela de Cadastro ========
   async function carregarCadastro(morador = null) {
     content.innerHTML = telasMoradores["Cadastro de moradores"];
-
-    const form = content.querySelector(".form-cadastro");
+    const form = content.querySelector(".form-cadastro-morador");
     if (!form) return;
 
     if (morador) {
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ======== Tela de Histórico ========
   async function carregarHistorico() {
     content.innerHTML = telasMoradores["Histórico de moradores"];
     const tbody = content.querySelector("#tabelaMoradoresBody");
@@ -43,8 +44,8 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${m.apartment?.number || "-"}</td>
           <td>${m.phone || "-"}</td>
           <td>
-            <button class="btn-editar" data-id="${m.id}">Editar</button>
-            <button class="btn-excluir" data-id="${m.id}">Excluir</button>
+            <button class="btn-editar-morador" data-id="${m.id}">Editar</button>
+            <button class="btn-excluir-morador" data-id="${m.id}">Excluir</button>
           </td>
         </tr>
       `
@@ -54,18 +55,19 @@ document.addEventListener("DOMContentLoaded", () => {
     attachMoradoresTableListener();
   }
 
+  // ======== Eventos da Tabela ========
   function attachMoradoresTableListener() {
     const tbody = content.querySelector("#tabelaMoradoresBody");
     if (!tbody) return;
 
     if (moradoresTbodyListener) {
-      try { tbody.removeEventListener("click", moradoresTbodyListener); } catch { }
+      try { tbody.removeEventListener("click", moradoresTbodyListener); } catch {}
       moradoresTbodyListener = null;
     }
 
     moradoresTbodyListener = async function (e) {
-      const btnEditar = e.target.closest(".btn-editar");
-      const btnExcluir = e.target.closest(".btn-excluir");
+      const btnEditar = e.target.closest(".btn-editar-morador");
+      const btnExcluir = e.target.closest(".btn-excluir-morador");
 
       if (btnEditar) {
         e.stopPropagation();
@@ -90,8 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", moradoresTbodyListener);
   }
 
+  // ======== Evento de Envio do Formulário ========
   content.addEventListener("submit", async (e) => {
-    if (!e.target.classList.contains("form-cadastro")) return;
+    if (!e.target.classList.contains("form-cadastro-morador")) return;
     e.preventDefault();
 
     const form = e.target;
@@ -117,6 +120,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // ======== Navegação do Menu ========
   const menu = document.querySelector("#menuMoradores");
   if (menu) {
     menu.addEventListener("click", (e) => {
@@ -127,5 +131,4 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item === "Histórico de moradores") carregarHistorico();
     });
   }
-
 });

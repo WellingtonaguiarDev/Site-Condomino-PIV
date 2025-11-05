@@ -1,3 +1,6 @@
+// ==========================================================
+// apiMoradores.js
+// ==========================================================
 const API_URL_MORADORES = "https://api.porttusmart.tech/api/v1/core/residents/";
 
 // Criar morador
@@ -20,7 +23,7 @@ async function criarMorador(dados) {
     email: dados.email?.trim() || null
   };
 
-  console.log("📦 Payload enviado ao backend:", payload);
+  console.log("📦 Payload enviado ao backend (morador):", payload);
 
   try {
     const res = await fetch(API_URL_MORADORES, {
