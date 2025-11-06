@@ -71,6 +71,35 @@ const telasComunicados = {
     </div>
   `,
 
+  "Cadastro de documentos": `
+    <div class="content-top-comunicados">
+      <h1>Cadastro de Documentos</h1>
+      <p class="lead-comunicados">Envie novos documentos do condomínio (ex: regulamentos, atas, circulares).</p>
+
+      <form class="form-cadastro-documento-comunicados" enctype="multipart/form-data">
+        <div class="form-group-comunicados">
+          <label>Título</label>
+          <input type="text" name="title" placeholder="Título do documento" required>
+        </div>
+
+        <div class="form-group-comunicados">
+          <label>Conteúdo</label>
+          <textarea name="content" placeholder="Descrição ou conteúdo do documento" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group-comunicados">
+          <label>Arquivo</label>
+          <input type="file" name="file_complement" accept=".pdf,.doc,.docx,.jpg,.png" required>
+        </div>
+
+        <div class="form-actions-comunicados">
+          <button type="submit" class="btn-salvar-comunicados">Enviar Documento</button>
+          <button type="reset" class="btn-cancelar-comunicados">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  `,
+
   "Documentos do condomínio": `
     <div class="content-top-comunicados">
       <h1>Documentos do Condomínio</h1>
@@ -87,7 +116,8 @@ const telasComunicados = {
           <table class="tabela-historico-comunicados">
             <thead>
               <tr>
-                <th>Nome do Documento</th>
+                <th>Título</th>
+                <th>Descrição</th>
                 <th>Arquivo</th>
                 <th>Data</th>
                 <th>Ações</th>
@@ -95,6 +125,10 @@ const telasComunicados = {
             </thead>
             <tbody id="tabelaDocumentosComunicadosBody"></tbody>
           </table>
+        </div>
+
+        <div id="loadingDocumentosComunicados" style="display:none;text-align:center;padding:20px;">
+          Carregando documentos...
         </div>
       </div>
     </div>

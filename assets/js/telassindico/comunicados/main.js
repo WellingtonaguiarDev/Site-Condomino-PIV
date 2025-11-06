@@ -4,6 +4,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let comunicadosTbodyListener = null;
+  let documentosTbodyListener = null;
 
   // ======== Tela de Cadastro ========
   async function carregarCadastroComunicados() {
@@ -49,7 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tbody.innerHTML = comunicados
         .map((c) => {
-          // Mostrando os dados corretos de bloco/apartamento
           const bloco = c.recipients?.[0]?.apartment?.block || "-";
           const apartamento = c.recipients?.[0]?.apartment?.number || "-";
 
@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ======== Eventos da Tabela ========
+  // ======== Eventos da Tabela de comunicados ========
   function attachComunicadosTableListener() {
     const tbody = content.querySelector("#tabelaComunicadosBody");
     if (!tbody) return;
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     comunicadosTbodyListener = async function (e) {
-      const btnExcluir = e.target.closest(".btn-excluir-comunicado");
+      const btnExcluir = e.target.closest(".btn-excluir-comunicados"); // corrigido
       if (btnExcluir) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
@@ -108,6 +108,101 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", comunicadosTbodyListener);
   }
 
+  // ======== Tela: Cadastro de Documentos ========
+  async function carregarCadastroDocumentos() {
+    content.innerHTML = telasComunicados["Cadastro de documentos"];
+    const form = content.querySelector(".form-cadastro-documento-comunicados");
+    if (!form) return;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(form);
+
+      try {
+        await criarDocumento(formData);
+        await carregarDocumentosCondominio();
+      } catch (err) {
+        console.error("❌ Erro ao cadastrar documento:", err);
+      }
+    });
+  }
+
+  // ======== Tela: Documentos do Condomínio ========
+  async function carregarDocumentosCondominio() {
+    content.innerHTML = telasComunicados["Documentos do condomínio"];
+    const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
+    const loading = content.querySelector("#loadingDocumentosComunicados");
+    if (!tbody) return;
+
+    loading.style.display = "block";
+
+    try {
+      const documentos = await listarDocumentos();
+
+      if (!Array.isArray(documentos) || documentos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum documento encontrado.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = documentos
+        .map((d) => {
+          const data = d.created_at ? new Date(d.created_at).toLocaleDateString() : "-";
+          return `
+            <tr>
+              <td>${d.title || "-"}</td>
+              <td>${d.content || "-"}</td>
+              <td>
+                ${d.file_complement ? `<a href="${d.file_complement}" target="_blank">📎 Baixar</a>` : "-"}
+              </td>
+              <td>${data}</td>
+              <td>
+                <button class="btn-excluir-documento" data-id="${d.id || ""}">Excluir</button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    } catch (err) {
+      console.error("❌ Erro ao carregar documentos:", err);
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Erro ao carregar documentos.</td></tr>`;
+    } finally {
+      loading.style.display = "none";
+      attachDocumentosTableListener(); // adiciona listener específico para documentos
+    }
+  }
+
+  // ======== Eventos da Tabela de documentos ========
+  function attachDocumentosTableListener() {
+    const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
+    if (!tbody) return;
+
+    if (documentosTbodyListener) {
+      try {
+        tbody.removeEventListener("click", documentosTbodyListener);
+      } catch {}
+      documentosTbodyListener = null;
+    }
+
+    documentosTbodyListener = async function (e) {
+      const btnExcluir = e.target.closest(".btn-excluir-documento");
+      if (btnExcluir) {
+        e.stopPropagation();
+        const id = btnExcluir.dataset.id;
+        if (confirm("Deseja excluir este documento?")) {
+          try {
+            await deletarDocumento(id);
+            await carregarDocumentosCondominio();
+          } catch (err) {
+            console.error("❌ Erro ao excluir documento:", err);
+          }
+        }
+      }
+    };
+
+    tbody.addEventListener("click", documentosTbodyListener);
+  }
+
   // ======== Navegação do Menu ========
   const menu = document.querySelector("#menuComunicados");
   if (menu) {
@@ -117,6 +212,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (item === "Novo comunicado") carregarCadastroComunicados();
       if (item === "Histórico de comunicados") carregarHistoricoComunicados();
+      if (item === "Cadastro de documentos") carregarCadastroDocumentos();
+      if (item === "Documentos do condomínio") carregarDocumentosCondominio();
     });
   }
 });

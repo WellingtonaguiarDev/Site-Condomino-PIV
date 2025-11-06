@@ -2,6 +2,7 @@
 // apiComunicados.js
 // ==========================================================
 const API_URL_COMUNICADOS = "https://api.porttusmart.tech/api/v1/core/communications/";
+const API_URL_DOCUMENTOS = "https://api.porttusmart.tech/api/v1/core/notices/";
 
 // Criar comunicado
 async function criarComunicado(dados) {
@@ -70,6 +71,70 @@ async function deletarComunicado(id) {
     alert("Comunicado excluído com sucesso!");
   } catch (err) {
     alert("Erro ao excluir comunicado: " + err.message);
+    console.error(err);
+  }
+}
+
+// ==========================================================
+// 📄 Documentos do Condomínio
+// ==========================================================
+
+// Criar documento (com upload)
+async function criarDocumento(formData) {
+  const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  if (!condominio?.code_condominium) {
+    alert("Selecione um condomínio antes de enviar o documento.");
+    return;
+  }
+
+  formData.append("code_condominium", condominio.code_condominium);
+
+  try {
+    const res = await fetch(API_URL_DOCUMENTOS, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    alert("Documento enviado com sucesso!");
+    return await res.json();
+  } catch (err) {
+    alert("Erro ao enviar documento: " + err.message);
+    console.error(err);
+  }
+}
+
+// Listar documentos (GET)
+async function listarDocumentos() {
+  const token = localStorage.getItem("access_token");
+  try {
+    const res = await fetch(API_URL_DOCUMENTOS, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error("Erro ao buscar documentos");
+    const data = await res.json();
+    return data.results || data;
+  } catch (err) {
+    console.error("Erro na listagem de documentos:", err);
+    return [];
+  }
+}
+
+// Deletar documento
+async function deletarDocumento(id) {
+  const token = localStorage.getItem("access_token");
+  try {
+    const res = await fetch(`${API_URL_DOCUMENTOS}${id}/`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    alert("Documento excluído com sucesso!");
+  } catch (err) {
+    alert("Erro ao excluir documento: " + err.message);
     console.error(err);
   }
 }
