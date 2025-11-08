@@ -19,7 +19,8 @@ document.addEventListener("DOMContentLoaded", () => {
         titulo: form.titulo.value.trim(),
         mensagem: form.mensagem.value.trim(),
         bloco: form.bloco.value.trim(),
-        apartamento: form.apartamento.value.trim()
+        apartamento: form.apartamento.value.trim(),
+        communication_type: "notice" // 🔹 tipo fixo para comunicados
       };
 
       try {
@@ -43,12 +44,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const comunicados = await listarComunicados();
 
-      if (!Array.isArray(comunicados) || comunicados.length === 0) {
+      // 🔹 Filtra apenas os comunicados do tipo "notice"
+      const comunicadosFiltrados = (comunicados || []).filter(
+        (c) => c.communication_type === "notice"
+      );
+
+      if (!Array.isArray(comunicadosFiltrados) || comunicadosFiltrados.length === 0) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum comunicado encontrado.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = comunicados
+      tbody.innerHTML = comunicadosFiltrados
         .map((c) => {
           const bloco = c.recipients?.[0]?.apartment?.block || "-";
           const apartamento = c.recipients?.[0]?.apartment?.number || "-";
@@ -90,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     comunicadosTbodyListener = async function (e) {
-      const btnExcluir = e.target.closest(".btn-excluir-comunicados"); // corrigido
+      const btnExcluir = e.target.closest(".btn-excluir-comunicados");
       if (btnExcluir) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
@@ -168,7 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Erro ao carregar documentos.</td></tr>`;
     } finally {
       loading.style.display = "none";
-      attachDocumentosTableListener(); // adiciona listener específico para documentos
+      attachDocumentosTableListener();
     }
   }
 

@@ -9,17 +9,23 @@ async function criarComunicado(dados) {
   const token = localStorage.getItem("access_token");
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
+  if (!token) {
+    alert("Sessão expirada. Faça login novamente.");
+    return;
+  }
+
   if (!condominio?.code_condominium) {
     alert("Selecione um condomínio antes de cadastrar o comunicado.");
     return;
   }
 
   const payload = {
-    title: dados.titulo,
+    title: dados.titulo || "Sem título",
     message: dados.mensagem,
     apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
     apartment_block: dados.bloco || null,
-    code_condominium: condominio.code_condominium
+    code_condominium: condominio.code_condominium,
+    communication_type: "notice" // ✅ Campo obrigatório para comunicados
   };
 
   console.log("📦 Payload enviado ao backend (comunicado):", payload);
@@ -34,27 +40,51 @@ async function criarComunicado(dados) {
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error(await res.text());
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Erro ao enviar comunicado.");
+    }
+
     alert("Comunicado enviado com sucesso!");
     return await res.json();
   } catch (err) {
     alert("Erro ao enviar comunicado: " + err.message);
-    console.error(err);
+    console.error("❌ Erro ao criar comunicado:", err);
+    return null;
   }
 }
 
 // Listar comunicados (GET)
 async function listarComunicados() {
   const token = localStorage.getItem("access_token");
+
+  if (!token) {
+    alert("Sessão expirada. Faça login novamente.");
+    return [];
+  }
+
   try {
     const res = await fetch(API_URL_COMUNICADOS, {
       headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error("Erro ao buscar comunicados");
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Erro ao buscar comunicados.");
+    }
+
     const data = await res.json();
-    return data.results || data;
+    const todos = data.results || data;
+
+    // ✅ Filtra apenas os comunicados (type = "notice")
+    const comunicadosFiltrados = todos.filter(
+      (c) => c.communication_type === "notice"
+    );
+
+    console.log("📜 Comunicados recebidos (filtrados):", comunicadosFiltrados);
+    return comunicadosFiltrados;
   } catch (err) {
-    console.error("Erro na listagem de comunicados:", err);
+    console.error("❌ Erro ao listar comunicados:", err);
     return [];
   }
 }
@@ -67,6 +97,7 @@ async function deletarComunicado(id) {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) throw new Error(await res.text());
     alert("Comunicado excluído com sucesso!");
   } catch (err) {
@@ -114,6 +145,7 @@ async function listarDocumentos() {
     const res = await fetch(API_URL_DOCUMENTOS, {
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) throw new Error("Erro ao buscar documentos");
     const data = await res.json();
     return data.results || data;
@@ -131,6 +163,7 @@ async function deletarDocumento(id) {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });
+
     if (!res.ok) throw new Error(await res.text());
     alert("Documento excluído com sucesso!");
   } catch (err) {
