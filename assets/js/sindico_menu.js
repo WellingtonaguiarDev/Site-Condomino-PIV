@@ -31,10 +31,40 @@ function mostrarTela(nome) {
   `;
 }
 
-// 🔹 Eventos de clique em todos os subitems
-document.querySelectorAll(".subitem").forEach(item => {
-  item.addEventListener("click", () => {
-    const tela = item.textContent.trim();
-    mostrarTela(tela);
+// Tudo que mexe no DOM espera o DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  // 🔹 Controla abertura dos menus laterais (apenas 1 aberto)
+  const toggles = Array.from(document.querySelectorAll(".menu-item > input[type='checkbox']"));
+
+  toggles.forEach(toggle => {
+    toggle.addEventListener("change", () => {
+      // só se estiver abrindo (checked === true) desmarca os outros
+      if (toggle.checked) {
+        toggles.forEach(t => {
+          if (t !== toggle) t.checked = false;
+        });
+      }
+      // se estiver fechando (toggle.checked === false), não faz nada com os outros
+    });
+  });
+
+  // 🔹 Eventos de clique em todos os subitems
+  const subitems = Array.from(document.querySelectorAll(".subitem"));
+  subitems.forEach(item => {
+    item.addEventListener("click", (e) => {
+      const tela = item.textContent.trim();
+
+      // Remove a classe 'active' de todos os itens
+      document.querySelectorAll(".subitem").forEach(i => i.classList.remove("active"));
+
+      // Adiciona a classe 'active' apenas ao item clicado
+      item.classList.add("active");
+
+      // MOSTRA A TELA — **não fechamos** o menu aqui (comportamento desejado)
+      mostrarTela(tela);
+
+      // Observação: se quiser que o foco visual volte pro item pai, ou role a sidebar,
+      // dá pra adicionar aqui com item.scrollIntoView() ou similar.
+    });
   });
 });
