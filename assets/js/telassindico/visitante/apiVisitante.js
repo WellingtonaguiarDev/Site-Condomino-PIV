@@ -10,7 +10,7 @@ async function criarVisitante(dados) {
 
   if (!condominio?.code_condominium) {
     alert("Selecione um condomínio antes de cadastrar o visitante.");
-    return;
+    return null;
   }
 
   const payload = {
@@ -18,7 +18,7 @@ async function criarVisitante(dados) {
     cpf_visitor: dados.cpf,
     block_apartment: dados.bloco,
     number_apartment: Number(dados.apartamento),
-    code_condominium: condominio.code_condominium
+    code_condominium: condominio.code_condominium,
   };
 
   try {
@@ -26,17 +26,19 @@ async function criarVisitante(dados) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) throw new Error(await res.text());
+
     alert("Visitante cadastrado com sucesso!");
     return await res.json();
   } catch (err) {
     alert("Erro ao cadastrar visitante: " + err.message);
     console.error(err);
+    return null;
   }
 }
 
@@ -45,7 +47,7 @@ async function listarVisitantes() {
   const token = localStorage.getItem("access_token");
   try {
     const res = await fetch(API_URL_VISITANTES, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) throw new Error("Erro ao buscar visitantes");
     const data = await res.json();
@@ -66,7 +68,7 @@ async function atualizarVisitante(id, dados) {
     cpf_visitor: dados.cpf,
     block_apartment: dados.bloco,
     number_apartment: Number(dados.apartamento),
-    code_condominium: condominio?.code_condominium
+    code_condominium: condominio?.code_condominium,
   };
 
   try {
@@ -74,16 +76,19 @@ async function atualizarVisitante(id, dados) {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) throw new Error(await res.text());
+
     alert("Visitante atualizado com sucesso!");
+    return true;
   } catch (err) {
     alert("Erro ao atualizar visitante: " + err.message);
     console.error(err);
+    return false;
   }
 }
 
@@ -93,7 +98,7 @@ async function deletarVisitante(id) {
   try {
     const res = await fetch(`${API_URL_VISITANTES}${id}/`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     });
     if (!res.ok) throw new Error(await res.text());
     alert("Visitante excluído com sucesso!");

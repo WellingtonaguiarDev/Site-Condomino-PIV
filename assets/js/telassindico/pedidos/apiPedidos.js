@@ -8,8 +8,7 @@ async function criarEntrega(dados) {
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
   if (!condominio?.code_condominium) {
-    alert("Selecione um condomínio antes de cadastrar a entrega.");
-    return;
+    throw new Error("Condomínio não selecionado.");
   }
 
   const formData = new FormData();
@@ -23,50 +22,49 @@ async function criarEntrega(dados) {
     formData.append("signature_image", dados.assinatura);
   }
 
-  try {
-    const res = await fetch(API_URL_ENTREGAS, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData
-    });
+  const res = await fetch(API_URL_ENTREGAS, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: formData
+  });
 
-    if (!res.ok) throw new Error(await res.text());
-    alert("Entrega cadastrada com sucesso!");
-    return await res.json();
-  } catch (err) {
-    alert("Erro ao cadastrar entrega: " + err.message);
-    console.error(err);
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg);
   }
+
+  return await res.json();
 }
 
 async function listarEntregas() {
   const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(API_URL_ENTREGAS, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
-    if (!res.ok) throw new Error("Erro ao buscar entregas");
-    const data = await res.json();
-    return data.results || data;
-  } catch (err) {
-    console.error(err);
-    return [];
+  if (!condominio?.code_condominium) {
+    throw new Error("Condomínio não selecionado.");
   }
+
+  const res = await fetch(API_URL_ENTREGAS, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) throw new Error("Erro ao buscar entregas");
+
+  const data = await res.json();
+
+  // 🔍 Filtra apenas entregas do condomínio selecionado
+  return (data.results || data).filter(
+    (e) => e.condominium?.code_condominium === condominio.code_condominium
+  );
 }
 
 async function deletarEntrega(id) {
   const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(`${API_URL_ENTREGAS}${id}/`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
-    });
 
-    if (!res.ok) throw new Error(await res.text());
-    alert("Entrega excluída com sucesso!");
-  } catch (err) {
-    alert("Erro ao excluir entrega: " + err.message);
-    console.error(err);
-  }
+  const res = await fetch(`${API_URL_ENTREGAS}${id}/`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) throw new Error(await res.text());
 }

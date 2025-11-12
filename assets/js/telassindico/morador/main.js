@@ -113,10 +113,13 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         await criarMorador(dados);
       }
+
+      // Só muda de tela se não deu erro
+      await carregarHistorico();
+
     } catch (err) {
       console.error("Erro ao salvar morador:", err);
-    } finally {
-      await carregarHistorico();
+      alert("Não foi possível salvar o morador. Verifique os dados e tente novamente.");
     }
   });
 

@@ -9,8 +9,7 @@ async function criarOcorrencia(dados) {
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
   if (!condominio?.code_condominium) {
-    alert("Selecione um condomínio antes de registrar uma ocorrência.");
-    return;
+    throw new Error("Condomínio não selecionado.");
   }
 
   const payload = {
@@ -22,41 +21,42 @@ async function criarOcorrencia(dados) {
     code_condominium: condominio.code_condominium
   };
 
-  console.log("📦 Payload enviado ao backend (ocorrência):", payload);
+  const res = await fetch(API_URL_OCORRENCIAS, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
 
-  try {
-    const res = await fetch(API_URL_OCORRENCIAS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+  if (!res.ok) throw new Error(await res.text());
 
-    if (!res.ok) throw new Error(await res.text());
-    alert("Ocorrência registrada com sucesso!");
-    return await res.json();
-  } catch (err) {
-    alert("Erro ao registrar ocorrência: " + err.message);
-    console.error(err);
-  }
+  return await res.json();
 }
 
 // Listar ocorrências
 async function listarOcorrencias() {
   const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(API_URL_OCORRENCIAS, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error("Erro ao buscar ocorrências");
-    const data = await res.json();
-    return data.results || data;
-  } catch (err) {
-    console.error(err);
-    return [];
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  const res = await fetch(API_URL_OCORRENCIAS, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) throw new Error("Erro ao buscar ocorrências");
+
+  const data = await res.json();
+  const ocorrencias = data.results || data;
+
+  // 🔍 Filtra apenas ocorrências do condomínio selecionado
+  if (condominio?.code_condominium) {
+    return ocorrencias.filter(
+      (o) => o.condominium?.code_condominium === condominio.code_condominium
+    );
   }
+
+  return ocorrencias;
 }
 
 // Atualizar ocorrência
@@ -64,45 +64,39 @@ async function atualizarOcorrencia(id, dados) {
   const token = localStorage.getItem("access_token");
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
+  if (!condominio?.code_condominium) {
+    throw new Error("Condomínio não selecionado.");
+  }
+
   const payload = {
     title: dados.titulo,
     description: dados.descricao,
     status: dados.status || "aberta",
     apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
     apartment_block: dados.bloco || null,
-    code_condominium: condominio?.code_condominium
+    code_condominium: condominio.code_condominium
   };
 
-  try {
-    const res = await fetch(`${API_URL_OCORRENCIAS}${id}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(payload)
-    });
+  const res = await fetch(`${API_URL_OCORRENCIAS}${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(payload)
+  });
 
-    if (!res.ok) throw new Error(await res.text());
-    alert("Ocorrência atualizada com sucesso!");
-  } catch (err) {
-    alert("Erro ao atualizar ocorrência: " + err.message);
-    console.error(err);
-  }
+  if (!res.ok) throw new Error(await res.text());
 }
 
 // Deletar ocorrência
 async function deletarOcorrencia(id) {
   const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(`${API_URL_OCORRENCIAS}${id}/`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) throw new Error(await res.text());
-    alert("Ocorrência excluída com sucesso!");
-  } catch (err) {
-    alert("Erro ao excluir ocorrência: " + err.message);
-    console.error(err);
-  }
+
+  const res = await fetch(`${API_URL_OCORRENCIAS}${id}/`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  if (!res.ok) throw new Error(await res.text());
 }

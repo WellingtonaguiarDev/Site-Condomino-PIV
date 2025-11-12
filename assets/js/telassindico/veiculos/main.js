@@ -1,5 +1,5 @@
 // ------------------------
-// mainVeiculos.js (versão modular com classes exclusivas)
+// mainVeiculos.js
 // ------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
@@ -40,26 +40,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const veiculos = await listarVeiculos();
 
-    tbody.innerHTML = veiculos
-      .map((v) => {
-        const bloco = v.owner?.apartment?.block || v.apartment_details?.block || "";
-        const apartamento = v.owner?.apartment?.number || v.apartment_details?.number || "";
+    tbody.innerHTML = veiculos.length
+      ? veiculos.map((v) => {
+          const bloco = v.owner?.apartment?.block || v.apartment_details?.block || "";
+          const apartamento = v.owner?.apartment?.number || v.apartment_details?.number || "";
 
-        return `
-          <tr>
-            <td>${v.plate || "-"}</td>
-            <td>${v.model || "-"}</td>
-            <td>${v.color || "-"}</td>
-            <td>${bloco || "-"}</td>
-            <td>${apartamento || "-"}</td>
-            <td>
-              <button class="btn-editar-veiculo" data-id="${v.id}">Editar</button>
-              <button class="btn-excluir-veiculo" data-id="${v.id}">Excluir</button>
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
+          return `
+            <tr>
+              <td>${v.plate || "-"}</td>
+              <td>${v.model || "-"}</td>
+              <td>${v.color || "-"}</td>
+              <td>${bloco || "-"}</td>
+              <td>${apartamento || "-"}</td>
+              <td>
+                <button class="btn-editar-veiculo" data-id="${v.id}">Editar</button>
+                <button class="btn-excluir-veiculo" data-id="${v.id}">Excluir</button>
+              </td>
+            </tr>
+          `;
+        }).join("")
+      : `<tr><td colspan="6">Nenhum veículo encontrado.</td></tr>`;
 
     attachVeiculosTableListener();
   }
@@ -133,18 +133,20 @@ document.addEventListener("DOMContentLoaded", () => {
       apartamento: form.apartamento?.value.trim() || "",
     };
 
+    let sucesso = false;
     try {
       if (veiculoEditando) {
-        await atualizarVeiculo(veiculoEditando, dados);
+        sucesso = await atualizarVeiculo(veiculoEditando, dados);
         veiculoEditando = null;
       } else {
-        await criarVeiculo(dados);
+        sucesso = await criarVeiculo(dados);
       }
     } catch (err) {
       console.error(err);
-    } finally {
-      await carregarHistorico();
     }
+
+    // Só muda de tela se a operação foi bem-sucedida
+    if (sucesso) await carregarHistorico();
   });
 
   // --- Navegação do menu ---
@@ -161,5 +163,4 @@ document.addEventListener("DOMContentLoaded", () => {
       if (item === "Histórico de veículos") carregarHistorico();
     });
   }
-
 });

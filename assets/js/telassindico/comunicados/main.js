@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let comunicadosTbodyListener = null;
   let documentosTbodyListener = null;
 
-  // ======== Tela de Cadastro ========
   async function carregarCadastroComunicados() {
     content.innerHTML = telasComunicados["Novo comunicado"];
     const form = content.querySelector(".form-cadastro-comunicados");
@@ -20,19 +19,16 @@ document.addEventListener("DOMContentLoaded", () => {
         mensagem: form.mensagem.value.trim(),
         bloco: form.bloco.value.trim(),
         apartamento: form.apartamento.value.trim(),
-        communication_type: "notice" // 🔹 tipo fixo para comunicados
+        communication_type: "notice"
       };
 
-      try {
-        await criarComunicado(dados);
+      const result = await criarComunicado(dados);
+      if (result) {
         await carregarHistoricoComunicados();
-      } catch (err) {
-        console.error("❌ Erro ao criar comunicado:", err);
       }
     });
   }
 
-  // ======== Tela de Histórico ========
   async function carregarHistoricoComunicados() {
     content.innerHTML = telasComunicados["Histórico de comunicados"];
     const tbody = content.querySelector("#tabelaComunicadosBody");
@@ -44,21 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const comunicados = await listarComunicados();
 
-      // 🔹 Filtra apenas os comunicados do tipo "notice"
-      const comunicadosFiltrados = (comunicados || []).filter(
-        (c) => c.communication_type === "notice"
-      );
-
-      if (!Array.isArray(comunicadosFiltrados) || comunicadosFiltrados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum comunicado encontrado.</td></tr>`;
+      if (!Array.isArray(comunicados) || comunicados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum comunicado encontrado.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = comunicadosFiltrados
-        .map((c) => {
+      tbody.innerHTML = comunicados
+        .map(c => {
           const bloco = c.recipients?.[0]?.apartment?.block || "-";
           const apartamento = c.recipients?.[0]?.apartment?.number || "-";
-
           return `
             <tr>
               <td>${c.title || "-"}</td>
@@ -66,47 +56,37 @@ document.addEventListener("DOMContentLoaded", () => {
               <td>${bloco}</td>
               <td>${apartamento}</td>
               <td>
-                <button class="btn-excluir-comunicados" data-id="${c.id || ""}">
-                  Excluir
-                </button>
+                <button class="btn-excluir-comunicados" data-id="${c.id || ""}">Excluir</button>
               </td>
             </tr>
           `;
         })
         .join("");
-    } catch (err) {
-      console.error("❌ Erro ao carregar comunicados:", err);
-      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Erro ao carregar comunicados.</td></tr>`;
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro ao carregar comunicados.</td></tr>`;
     } finally {
       loading.style.display = "none";
       attachComunicadosTableListener();
     }
   }
 
-  // ======== Eventos da Tabela de comunicados ========
   function attachComunicadosTableListener() {
     const tbody = content.querySelector("#tabelaComunicadosBody");
     if (!tbody) return;
 
     if (comunicadosTbodyListener) {
-      try {
-        tbody.removeEventListener("click", comunicadosTbodyListener);
-      } catch {}
+      try { tbody.removeEventListener("click", comunicadosTbodyListener); } catch {}
       comunicadosTbodyListener = null;
     }
 
-    comunicadosTbodyListener = async function (e) {
+    comunicadosTbodyListener = async (e) => {
       const btnExcluir = e.target.closest(".btn-excluir-comunicados");
       if (btnExcluir) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este comunicado?")) {
-          try {
-            await deletarComunicado(id);
-            await carregarHistoricoComunicados();
-          } catch (err) {
-            console.error("❌ Erro ao excluir comunicado:", err);
-          }
+          await deletarComunicado(id);
+          await carregarHistoricoComunicados();
         }
       }
     };
@@ -114,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", comunicadosTbodyListener);
   }
 
-  // ======== Tela: Cadastro de Documentos ========
   async function carregarCadastroDocumentos() {
     content.innerHTML = telasComunicados["Cadastro de documentos"];
     const form = content.querySelector(".form-cadastro-documento-comunicados");
@@ -122,19 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const formData = new FormData(form);
-
-      try {
-        await criarDocumento(formData);
-        await carregarDocumentosCondominio();
-      } catch (err) {
-        console.error("❌ Erro ao cadastrar documento:", err);
-      }
+      const result = await criarDocumento(formData);
+      if (result) await carregarDocumentosCondominio();
     });
   }
 
-  // ======== Tela: Documentos do Condomínio ========
   async function carregarDocumentosCondominio() {
     content.innerHTML = telasComunicados["Documentos do condomínio"];
     const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
@@ -147,20 +119,18 @@ document.addEventListener("DOMContentLoaded", () => {
       const documentos = await listarDocumentos();
 
       if (!Array.isArray(documentos) || documentos.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum documento encontrado.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum documento encontrado.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = documentos
-        .map((d) => {
+        .map(d => {
           const data = d.created_at ? new Date(d.created_at).toLocaleDateString() : "-";
           return `
             <tr>
               <td>${d.title || "-"}</td>
               <td>${d.content || "-"}</td>
-              <td>
-                ${d.file_complement ? `<a href="${d.file_complement}" target="_blank">📎 Baixar</a>` : "-"}
-              </td>
+              <td>${d.file_complement ? `<a href="${d.file_complement}" target="_blank">📎 Baixar</a>` : "-"}</td>
               <td>${data}</td>
               <td>
                 <button class="btn-excluir-documento" data-id="${d.id || ""}">Excluir</button>
@@ -169,39 +139,31 @@ document.addEventListener("DOMContentLoaded", () => {
           `;
         })
         .join("");
-    } catch (err) {
-      console.error("❌ Erro ao carregar documentos:", err);
-      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:red;">Erro ao carregar documentos.</td></tr>`;
+    } catch {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro ao carregar documentos.</td></tr>`;
     } finally {
       loading.style.display = "none";
       attachDocumentosTableListener();
     }
   }
 
-  // ======== Eventos da Tabela de documentos ========
   function attachDocumentosTableListener() {
     const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
     if (!tbody) return;
 
     if (documentosTbodyListener) {
-      try {
-        tbody.removeEventListener("click", documentosTbodyListener);
-      } catch {}
+      try { tbody.removeEventListener("click", documentosTbodyListener); } catch {}
       documentosTbodyListener = null;
     }
 
-    documentosTbodyListener = async function (e) {
+    documentosTbodyListener = async (e) => {
       const btnExcluir = e.target.closest(".btn-excluir-documento");
       if (btnExcluir) {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este documento?")) {
-          try {
-            await deletarDocumento(id);
-            await carregarDocumentosCondominio();
-          } catch (err) {
-            console.error("❌ Erro ao excluir documento:", err);
-          }
+          await deletarDocumento(id);
+          await carregarDocumentosCondominio();
         }
       }
     };
@@ -209,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", documentosTbodyListener);
   }
 
-  // ======== Navegação do Menu ========
   const menu = document.querySelector("#menuComunicados");
   if (menu) {
     menu.addEventListener("click", (e) => {

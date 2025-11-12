@@ -92,8 +92,13 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir esta reserva?")) {
-          await deletarReserva(id);
-          await carregarHistorico();
+          try {
+            await deletarReserva(id);
+            await carregarHistorico();
+          } catch (err) {
+            console.error(err);
+            alert("Erro ao excluir reserva. Verifique e tente novamente.");
+          }
         }
         return;
       }
@@ -120,13 +125,19 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if (form.dataset.id) {
         await atualizarReserva(form.dataset.id, dados);
+        alert("Reserva atualizada com sucesso!");
       } else {
         await criarReserva(dados);
+        alert("Reserva cadastrada com sucesso!");
       }
+
+      // 🔹 só muda para histórico se não houver erro
+      await carregarHistorico();
+
     } catch (err) {
       console.error("Erro ao salvar reserva:", err);
-    } finally {
-      await carregarHistorico();
+      alert("Não foi possível salvar a reserva. Verifique e tente novamente.");
+      // histórico NÃO é carregado
     }
   });
 

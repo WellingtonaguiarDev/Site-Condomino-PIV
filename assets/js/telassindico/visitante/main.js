@@ -30,26 +30,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = content.querySelector("#visitantesTableBody");
     if (!tbody) return;
 
-    const visitantes = await listarVisitantes();
+    try {
+      const visitantes = await listarVisitantes();
+      const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
-    tbody.innerHTML = visitantes
-      .map(
-        (v) => `
-        <tr>
-          <td>${v.visitor?.name || "-"}</td>
-          <td>${v.apartment?.block || "-"}</td>
-          <td>${v.apartment?.number || "-"}</td>
-          <td>${v.visitor?.cpf || "-"}</td>
-          <td>
-            <button class="btn-editar-visitante" data-id="${v.id}">Editar</button>
-            <button class="btn-excluir-visitante" data-id="${v.id}">Excluir</button>
-          </td>
-        </tr>
-      `
-      )
-      .join("");
+      const visitantesFiltrados = (visitantes || []).filter((v) => {
+        const code =
+          v.visitor?.condominium?.code_condominium ||
+          v.apartment?.condominium_detail?.code_condominium;
+        return code === condominio?.code_condominium;
+      });
 
-    attachVisitantesTableListener();
+      if (visitantesFiltrados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5">Nenhum visitante encontrado para este condomínio.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = visitantesFiltrados
+        .map(
+          (v) => `
+          <tr>
+            <td>${v.visitor?.name || "-"}</td>
+            <td>${v.apartment?.block || "-"}</td>
+            <td>${v.apartment?.number || "-"}</td>
+            <td>${v.visitor?.cpf || "-"}</td>
+            <td>
+              <button class="btn-editar-visitante" data-id="${v.id}">Editar</button>
+              <button class="btn-excluir-visitante" data-id="${v.id}">Excluir</button>
+            </td>
+          </tr>
+        `
+        )
+        .join("");
+
+      attachVisitantesTableListener();
+    } catch (err) {
+      console.error("Erro ao carregar histórico de visitantes:", err);
+      alert("Erro ao carregar visitantes.");
+    }
   }
 
   // --- Listener da tabela ---
@@ -58,7 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tbody) return;
 
     if (visitantesTbodyListener) {
-      try { tbody.removeEventListener("click", visitantesTbodyListener); } catch {}
+      try {
+        tbody.removeEventListener("click", visitantesTbodyListener);
+      } catch {}
       visitantesTbodyListener = null;
     }
 
@@ -99,19 +119,23 @@ document.addEventListener("DOMContentLoaded", () => {
       nome: form.nome.value.trim(),
       cpf: form.cpf.value.trim(),
       bloco: form.bloco.value.trim(),
-      apartamento: form.apartamento.value.trim()
+      apartamento: form.apartamento.value.trim(),
     };
 
     try {
+      let sucesso = false;
       if (form.dataset.id) {
-        await atualizarVisitante(form.dataset.id, dados);
+        sucesso = await atualizarVisitante(form.dataset.id, dados);
       } else {
-        await criarVisitante(dados);
+        const criado = await criarVisitante(dados);
+        sucesso = !!criado;
       }
+
+      // só vai pra tela de histórico se deu certo
+      if (sucesso) await carregarHistorico();
     } catch (err) {
       console.error("Erro ao salvar visitante:", err);
-    } finally {
-      await carregarHistorico();
+      alert("Erro ao salvar visitante.");
     }
   });
 

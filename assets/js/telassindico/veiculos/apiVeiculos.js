@@ -9,7 +9,7 @@ async function criarVeiculo(dados) {
 
   if (!condominio?.code_condominium) {
     alert("Selecione um condomínio antes de cadastrar o veículo.");
-    return;
+    return false;
   }
 
   const payload = {
@@ -33,15 +33,19 @@ async function criarVeiculo(dados) {
 
     if (!res.ok) throw new Error(await res.text());
     alert("Veículo cadastrado com sucesso!");
-    return await res.json();
+    return true;
   } catch (err) {
     alert("Erro ao cadastrar veículo: " + err.message);
     console.error(err);
+    return false;
   }
 }
 
 async function listarVeiculos() {
   const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+  if (!condominio?.code_condominium) return [];
+
   try {
     const res = await fetch(API_URL_VEICULOS, {
       headers: { Authorization: `Bearer ${token}` }
@@ -49,7 +53,10 @@ async function listarVeiculos() {
 
     if (!res.ok) throw new Error("Erro ao buscar veículos");
     const data = await res.json();
-    return data.results || data;
+    const veiculos = data.results || data;
+
+    // Filtro pelo condomínio selecionado
+    return veiculos.filter(v => v.condominium?.code_condominium === condominio.code_condominium);
   } catch (err) {
     console.error(err);
     return [];
@@ -62,7 +69,7 @@ async function atualizarVeiculo(id, dados) {
 
   if (!condominio?.code_condominium) {
     alert("Selecione um condomínio antes de atualizar o veículo.");
-    return;
+    return false;
   }
 
   const payload = {
@@ -86,9 +93,11 @@ async function atualizarVeiculo(id, dados) {
 
     if (!res.ok) throw new Error(await res.text());
     alert("Veículo atualizado com sucesso!");
+    return true;
   } catch (err) {
     alert("Erro ao atualizar veículo: " + err.message);
     console.error(err);
+    return false;
   }
 }
 

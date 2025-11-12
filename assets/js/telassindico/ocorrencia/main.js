@@ -1,5 +1,5 @@
 // ==========================================================
-// mainOcorrencia.js
+// mainOcorrencias.js
 // ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
@@ -126,13 +126,17 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       if (form.dataset.id) {
         await atualizarOcorrencia(form.dataset.id, dados);
+        alert("Ocorrência atualizada com sucesso!");
       } else {
         await criarOcorrencia(dados);
+        alert("Ocorrência cadastrada com sucesso!");
       }
+
+      // Só troca para histórico se deu certo
+      await carregarHistorico();
     } catch (err) {
       console.error("Erro ao salvar ocorrência:", err);
-    } finally {
-      await carregarHistorico();
+      alert("Não foi possível salvar a ocorrência. Verifique e tente novamente.");
     }
   });
 

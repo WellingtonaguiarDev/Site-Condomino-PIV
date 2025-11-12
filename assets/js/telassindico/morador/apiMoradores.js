@@ -10,7 +10,7 @@ async function criarMorador(dados) {
 
   if (!condominio?.code_condominium) {
     alert("Selecione um condomínio antes de cadastrar o morador.");
-    return;
+    throw new Error("Condomínio não selecionado.");
   }
 
   const payload = {
@@ -41,21 +41,35 @@ async function criarMorador(dados) {
   } catch (err) {
     alert("Erro ao cadastrar morador: " + err.message);
     console.error(err);
+    throw err; // <- ESSENCIAL: propaga o erro
   }
 }
 
 // Listar moradores
 async function listarMoradores() {
   const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
   try {
     const res = await fetch(API_URL_MORADORES, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (!res.ok) throw new Error("Erro ao buscar moradores");
+
     const data = await res.json();
-    return data.results || data;
+    const moradores = data.results || data;
+
+    // 🔍 Filtra apenas moradores do condomínio selecionado
+    if (condominio?.code_condominium) {
+      return moradores.filter(
+        (m) =>
+          m.condominium?.code_condominium === condominio.code_condominium
+      );
+    }
+
+    return moradores;
   } catch (err) {
-    console.error(err);
+    console.error("Erro ao listar moradores:", err);
     return [];
   }
 }
@@ -90,6 +104,7 @@ async function atualizarMorador(id, dados) {
   } catch (err) {
     alert("Erro ao atualizar morador: " + err.message);
     console.error(err);
+    throw err; // <- ESSENCIAL: propaga o erro
   }
 }
 

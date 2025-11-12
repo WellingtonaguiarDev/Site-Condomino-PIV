@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== CADASTRO ENTREGA =====
   async function carregarCadastro(entrega = null) {
     content.innerHTML = telasEntregas["Cadastro de entregas"];
-
     const form = content.querySelector(".form-cadastro-entrega");
     if (!form) return;
 
@@ -18,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
       form.apartamento.value = entrega.apartment_number || "";
       form.dataset.id = entrega.id;
     } else {
+      form.reset();
       form.removeAttribute("data-id");
     }
   }
@@ -29,26 +29,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tbody) return;
 
     const entregas = await listarEntregas();
-    console.log("DEBUG: dados retornados do backend:", entregas);
 
-    tbody.innerHTML = entregas
-      .map((e) => {
-        const bloco = e.owner?.apartment?.block ?? "-";
-        const apartamento = e.owner?.apartment?.number ?? "-";
+    tbody.innerHTML = entregas.length
+      ? entregas.map((e) => {
+          const bloco = e.owner?.apartment?.block ?? "-";
+          const apartamento = e.owner?.apartment?.number ?? "-";
 
-        return `
-          <tr>
-            <td>${e.order_code || "-"}</td>
-            <td>${e.status || "-"}</td>
-            <td>${bloco}</td>
-            <td>${apartamento}</td>
-            <td>
-              <button class="btn-excluir-entrega" data-id="${e.id}">Excluir</button>
-            </td>
-          </tr>
-        `;
-      })
-      .join("");
+          return `
+            <tr>
+              <td>${e.order_code || "-"}</td>
+              <td>${e.status || "-"}</td>
+              <td>${bloco}</td>
+              <td>${apartamento}</td>
+              <td>
+                <button class="btn-excluir-entrega" data-id="${e.id}">Excluir</button>
+              </td>
+            </tr>
+          `;
+        }).join("")
+      : `<tr><td colspan="5" style="text-align:center;">Nenhuma entrega encontrada</td></tr>`;
 
     attachEntregasTableListener();
   }
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tbody) return;
 
     if (entregasTbodyListener) {
-      try { tbody.removeEventListener("click", entregasTbodyListener); } catch (err) { }
+      try { tbody.removeEventListener("click", entregasTbodyListener); } catch (err) {}
       entregasTbodyListener = null;
     }
 
@@ -73,10 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm("Deseja excluir esta entrega?")) {
           try {
             await deletarEntrega(id);
+            await carregarHistorico();
           } catch (err) {
             console.error(err);
-          } finally {
-            await carregarHistorico();
+            alert("Não foi possível excluir a entrega. Tente novamente.");
           }
         }
       }
@@ -102,14 +101,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (form.dataset.id) {
-        console.log("Editar entrega ID:", form.dataset.id, dados);
+        alert("Atualização ainda não implementada");
       } else {
         await criarEntrega(dados);
       }
+
+      // 🔹 só muda para histórico se não houver erro
+      await carregarHistorico();
+
     } catch (err) {
       console.error(err);
-    } finally {
-      await carregarHistorico();
+      alert("Erro ao salvar entrega. Verifique e tente novamente.");
     }
   });
 

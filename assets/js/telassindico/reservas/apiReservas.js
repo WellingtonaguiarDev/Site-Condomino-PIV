@@ -8,83 +8,7 @@ async function criarReserva(dados) {
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
   if (!condominio?.code_condominium) {
-    alert("Selecione um condomínio antes de cadastrar a reserva.");
-    return;
-  }
-
-  // Monta os horários completos no formato ISO UTC
-  const start_time = `${dados.data}T${dados.horaInicio}:00Z`;
-  const end_time = `${dados.data}T${dados.horaFim}:00Z`;
-
-  const payload = {
-    space: dados.space,
-    apartment_block: dados.apartment_block,
-    apartment_number: dados.apartment_code, 
-    code_condominium: condominio.code_condominium,
-    start_time,
-    end_time,
-  };
-
-  try {
-    const res = await fetch(API_URL_RESERVAS, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const msg = await res.text();
-      throw new Error(msg);
-    }
-
-    alert("Reserva cadastrada com sucesso!");
-    return await res.json();
-  } catch (err) {
-    alert("Erro ao cadastrar reserva: " + err.message);
-    console.error(err);
-  }
-}
-
-async function listarReservas() {
-  const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(API_URL_RESERVAS, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error("Erro ao buscar reservas");
-    const data = await res.json();
-    return data.results || data;
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-}
-
-async function deletarReserva(id) {
-  const token = localStorage.getItem("access_token");
-  try {
-    const res = await fetch(`${API_URL_RESERVAS}${id}/`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error(await res.text());
-    alert("Reserva excluída com sucesso!");
-  } catch (err) {
-    alert("Erro ao excluir reserva: " + err.message);
-    console.error(err);
-  }
-}
-
-async function atualizarReserva(id, dados) {
-  const token = localStorage.getItem("access_token");
-  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
-
-  if (!condominio?.code_condominium) {
-    alert("Selecione um condomínio antes de atualizar a reserva.");
-    return;
+    throw new Error("Condomínio não selecionado.");
   }
 
   const start_time = `${dados.data}T${dados.horaInicio}:00Z`;
@@ -99,20 +23,85 @@ async function atualizarReserva(id, dados) {
     end_time,
   };
 
-  try {
-    const res = await fetch(`${API_URL_RESERVAS}${id}/`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    });
+  const res = await fetch(API_URL_RESERVAS, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
 
-    if (!res.ok) throw new Error(await res.text());
-    alert("Reserva atualizada com sucesso!");
-  } catch (err) {
-    alert("Erro ao atualizar reserva: " + err.message);
-    console.error(err);
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg);
   }
+
+  return await res.json();
+}
+
+async function listarReservas() {
+  const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  const res = await fetch(API_URL_RESERVAS, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) throw new Error("Erro ao buscar reservas");
+
+  const data = await res.json();
+  const reservas = data.results || data;
+
+  // 🔍 Filtra apenas reservas do condomínio selecionado
+  if (condominio?.code_condominium) {
+    return reservas.filter(
+      (r) => r.condominium?.code_condominium === condominio.code_condominium
+    );
+  }
+
+  return reservas;
+}
+
+async function deletarReserva(id) {
+  const token = localStorage.getItem("access_token");
+
+  const res = await fetch(`${API_URL_RESERVAS}${id}/`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) throw new Error(await res.text());
+}
+
+async function atualizarReserva(id, dados) {
+  const token = localStorage.getItem("access_token");
+  const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
+
+  if (!condominio?.code_condominium) {
+    throw new Error("Condomínio não selecionado.");
+  }
+
+  const start_time = `${dados.data}T${dados.horaInicio}:00Z`;
+  const end_time = `${dados.data}T${dados.horaFim}:00Z`;
+
+  const payload = {
+    space: dados.space,
+    apartment_block: dados.apartment_block,
+    apartment_number: dados.apartment_code,
+    code_condominium: condominio.code_condominium,
+    start_time,
+    end_time,
+  };
+
+  const res = await fetch(`${API_URL_RESERVAS}${id}/`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error(await res.text());
 }
