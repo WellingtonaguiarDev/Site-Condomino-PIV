@@ -5,8 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel Morador</title>
   <link rel="stylesheet" href="../assets/css/homemorador.css" />
-  <link rel="stylesheet" href="../assets/css/sindico_morador.css" />
   <link rel="stylesheet" href="../assets/css/ia_chatbot.css" />
+
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_dados.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_veiculo.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_reserva.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_pedido.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_documento.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_comunicado.css" />
+  <link rel="stylesheet" href="../assets/css/telasmorador/morador_mensagens.css" />
+  
 </head>
 <body>
 
@@ -14,12 +22,24 @@
   <header class="topbar">
     <div class="topbar-left">
       <button class="mobile-toggle" aria-label="Abrir menu">☰</button>
-      <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
+      <a href="homemorador.html">
+        <img src="../assets/img/logoinit.jpeg" alt="Logo PorttuSmart" class="logo">
+      </a>
     </div>
 
     <div class="topbar-right">
       <button class="icon-btn" aria-label="buscar">🔍</button>
-      <button class="icon-btn" aria-label="notificações">🔔</button>
+      
+      <!-- 🔔 Notificações -->
+      <div class="notification-wrapper">
+        <button id="notification-bell" class="icon-btn" aria-label="notificações">
+          🔔
+          <div id="notification-count"></div>
+        </button>
+        <div id="notification-dropdown" class="notification-dropdown">
+          <p class="no-notifications">Nenhuma nova solicitação.</p>
+        </div>
+      </div>
       <button class="icon-btn" id="menuButton" aria-label="menu">⋮</button>
     </div>
 
@@ -48,16 +68,16 @@
       <!-- Menu rolável atualizado -->
       <nav class="menu-scroll" aria-label="menu principal">
         <!-- Meus Dados -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuDados">
           <input type="checkbox" id="meusdados-toggle" />
           <label for="meusdados-toggle" class="item">Meus Dados ▾</label>
           <div class="submenu">
-            <div class="subitem active">Atualizar cadastro</div>
+            <div class="subitem active">Atualizar Cadastro</div>
           </div>
         </div>
 
         <!-- Veículos -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuVeiculos">
           <input type="checkbox" id="veiculos-toggle" />
           <label for="veiculos-toggle" class="item">Veículos ▾</label>
           <div class="submenu">
@@ -66,7 +86,7 @@
         </div>
 
         <!-- Áreas Comuns -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuReservas">
           <input type="checkbox" id="areas-toggle" />
           <label for="areas-toggle" class="item">Áreas Comuns ▾</label>
           <div class="submenu">
@@ -76,7 +96,7 @@
         </div>
 
         <!-- Entregas -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuEntregas">
           <input type="checkbox" id="entregas-toggle" />
           <label for="entregas-toggle" class="item">Entregas ▾</label>
           <div class="submenu">
@@ -85,7 +105,7 @@
         </div>
 
         <!-- Documentos -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuDocumentos">
           <input type="checkbox" id="documentos-toggle" />
           <label for="documentos-toggle" class="item">Documentos ▾</label>
           <div class="submenu">
@@ -94,7 +114,7 @@
         </div>
 
         <!-- Comunicados -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuComunicados">
           <input type="checkbox" id="comunicados-toggle" />
           <label for="comunicados-toggle" class="item">Comunicados ▾</label>
           <div class="submenu">
@@ -103,7 +123,7 @@
         </div>
 
         <!-- Mensagens -->
-        <div class="menu-item">
+        <div class="menu-item" id="menuMensagens">
           <input type="checkbox" id="mensagens-toggle" />
           <label for="mensagens-toggle" class="item">Mensagens ▾</label>
           <div class="submenu">
@@ -139,17 +159,47 @@
   </div>
 
   <!-- Scripts -->
-  <script src="../assets/js/homemorador.js"></script>
   <script src="../assets/js/mobile.js"></script>
-  <script src="../assets/js/telasmorador/morador_dados.js"></script>
-  <script src="../assets/js/telasmorador/morador_financeiro.js"></script>
-  <script src="../assets/js/telasmorador/morador_areas.js"></script>
-  <script src="../assets/js/telasmorador/morador_ocorrencia.js"></script>
-  <script src="../assets/js/telasmorador/morador_comunicados.js"></script>
-  <script src="../assets/js/telasmorador/morador_mensagens.js"></script>
-  <script src="../assets/js/morador_menu.js"></script>
+  <script src="../assets/js/homemorador.js"></script> 
   <script src="../assets/js/logout.js"></script>
+  <script src="../assets/js/morador_notificacoes.js"></script>
 
+  <!-- 🚚 Scripts do módulo de Dados -->
+  <script src="../assets/js/telasmorador/dados/apiDados.js"></script>
+  <script src="../assets/js/telasmorador/dados/telasDados.js"></script>
+  <script src="../assets/js/telasmorador/dados/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Veiculos -->
+  <script src="../assets/js/telasmorador/veiculos/apiVeiculos.js"></script>
+  <script src="../assets/js/telasmorador/veiculos/telasVeiculos.js"></script>
+  <script src="../assets/js/telasmorador/veiculos/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Reservas -->
+  <script src="../assets/js/telasmorador/reservas/apiReservas.js"></script>
+  <script src="../assets/js/telasmorador/reservas/telasReservas.js"></script>
+  <script src="../assets/js/telasmorador/reservas/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Entregas -->
+  <script src="../assets/js/telasmorador/pedidos/apiPedidos.js"></script>
+  <script src="../assets/js/telasmorador/pedidos/telasPedidos.js"></script>
+  <script src="../assets/js/telasmorador/pedidos/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Documentos -->
+  <script src="../assets/js/telasmorador/documentos/apiDocumentos.js"></script>
+  <script src="../assets/js/telasmorador/documentos/telasDocumentos.js"></script>
+  <script src="../assets/js/telasmorador/documentos/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Comunicados -->
+  <script src="../assets/js/telasmorador/comunicados/apiComunicados.js"></script>
+  <script src="../assets/js/telasmorador/comunicados/telasComunicados.js"></script>
+  <script src="../assets/js/telasmorador/comunicados/main.js"></script>
+
+  <!-- 🚚 Scripts do módulo de Mensagens -->
+  <script src="../assets/js/telasmorador/mensagens/apiMensagens.js"></script>
+  <script src="../assets/js/telasmorador/mensagens/telasMensagens.js"></script>
+  <script src="../assets/js/telasmorador/mensagens/main.js"></script>
+
+  <script src="../assets/js/morador_menu.js"></script>
   <!-- Script do menu suspenso -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
