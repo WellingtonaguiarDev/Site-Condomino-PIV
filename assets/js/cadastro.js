@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Coleta os dados do formulário
     const nome = form.nome.value.trim();
     const cpf = form.cpf.value.trim();
-       const telefone = form.telefone.value.trim();
+    const telefone = form.telefone.value.trim();
     const email = form.email.value.trim();
     const senha = form.senha.value.trim();
     const codigoCondominio = form.codigoCondominio.value.trim();
@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
       password: senha,
       telephone: telefone,
       user_type: "resident",
-      apartment_number: apartamento,
-      apartment_block: bloco,
+      number_apartment: apartamento,
+      block_apartment: bloco,
       condominium: codigoCondominio,
       recaptcha_token: recaptcha_token   // <<--- AQUI FOI ADICIONADO
     };
