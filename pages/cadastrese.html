@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PorttuSmart - Cadastre-se</title>
   <link rel="stylesheet" href="../assets/css/login.css">
+
+  <!-- reCAPTCHA v2 -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <div class="container">
@@ -37,6 +40,12 @@
       <!-- Campo de senha -->
       <input type="password" name="senha" placeholder="Senha" required>
 
+      <!-- reCAPTCHA -->
+      <div 
+        class="g-recaptcha" 
+        data-sitekey="6Ld0XQssAAAAAOisVdWWEvGONekE0uCBODWwgQPg">
+      </div>
+
       <!-- Botão de envio -->
       <button type="submit">Cadastrar</button>
     </form>
@@ -52,6 +61,7 @@
       <p>Acordo de confidencialidade</p>
     </footer>
   </div>
+
   <script src="../assets/js/cadastro.js"></script>
 </body>
 </html>

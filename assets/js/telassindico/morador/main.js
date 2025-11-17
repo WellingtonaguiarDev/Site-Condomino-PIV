@@ -33,26 +33,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = content.querySelector("#tabelaMoradoresBody");
     if (!tbody) return;
 
-    const moradores = await listarMoradores();
+    try {
+      const moradores = await listarMoradores();
+      const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
-    tbody.innerHTML = moradores
-      .map(
-        (m) => `
-        <tr>
-          <td>${m.name || "-"}</td>
-          <td>${m.apartment?.block || "-"}</td>
-          <td>${m.apartment?.number || "-"}</td>
-          <td>${m.phone || "-"}</td>
-          <td>
-            <button class="btn-editar-morador" data-id="${m.id}">Editar</button>
-            <button class="btn-excluir-morador" data-id="${m.id}">Excluir</button>
-          </td>
-        </tr>
-      `
-      )
-      .join("");
+      // 🔍 Filtra moradores pelo condomínio selecionado
+      const moradoresFiltrados = (moradores || []).filter((m) => {
+        const code =
+          m.condominium?.code_condominium ||
+          m.apartment_details?.condominium_detail?.code_condominium;
 
-    attachMoradoresTableListener();
+        return code === condominio?.code_condominium;
+      });
+
+      // 🆕 Caso não tenha moradores cadastrados para o condomínio
+      if (moradoresFiltrados.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align:center; padding: 12px;">
+              Nenhum morador encontrado para este condomínio.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Renderiza moradores normalmente
+      tbody.innerHTML = moradoresFiltrados
+        .map(
+          (m) => `
+          <tr>
+            <td>${m.name || "-"}</td>
+            <td>${m.apartment?.block || m.apartment_details?.block || "-"}</td>
+            <td>${m.apartment?.number || m.apartment_details?.number || "-"}</td>
+            <td>${m.phone || "-"}</td>
+            <td>
+              <button class="btn-editar-morador" data-id="${m.id}">Editar</button>
+              <button class="btn-excluir-morador" data-id="${m.id}">Excluir</button>
+            </td>
+          </tr>
+        `
+        )
+        .join("");
+
+      attachMoradoresTableListener();
+    } catch (err) {
+      console.error("Erro ao carregar histórico de moradores:", err);
+      alert("Erro ao carregar moradores.");
+    }
   }
 
   // ======== Eventos da Tabela ========

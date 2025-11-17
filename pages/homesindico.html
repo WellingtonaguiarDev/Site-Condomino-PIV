@@ -6,14 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel Gestor</title>
   <link rel="stylesheet" href="../assets/css/homesindico.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_morador.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_visitante.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_veiculo.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_pedido.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_reserva.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_comunicado.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_ocorrencia.css" />
-  <link rel="stylesheet" href="../assets/css//telassindico/sindico_mensagens.css" />
+  
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_morador.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_visitante.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_veiculo.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_pedido.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_reserva.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_comunicado.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_ocorrencia.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_mensagens.css" />
+  <link rel="stylesheet" href="../assets/css/telassindico/sindico_financeiro.css" />
 </head>
 
 <body>
@@ -120,9 +122,11 @@
           <input type="checkbox" id="financeiro-toggle" />
           <label for="financeiro-toggle" class="item">Financeiro ▾</label>
           <div class="submenu">
-            <div class="subitem">Boletos</div>
+            <div class="subitem">Cadastro de lançamentos</div>
+            <div class="subitem">Histórico de lançamentos</div>
           </div>
         </div>
+
 
         <div class="menu-item" id="menuOcorrencias">
           <input type="checkbox" id="ocorrencias-toggle" />
@@ -209,7 +213,10 @@
   <script src="../assets/js/telassindico/reservas/telasReservas.js"></script>
   <script src="../assets/js/telassindico/reservas/main.js"></script>
 
-  <script src="../assets/js/telassindico/sindico_financeiro.js"></script>
+  <!-- 🚚 Scripts do módulo de Financeiro -->
+  <script src="../assets/js/telassindico/financeiro/apiFinanceiro.js"></script>
+  <script src="../assets/js/telassindico/financeiro/telasFinanceiro.js"></script>
+  <script src="../assets/js/telassindico/financeiro/main.js"></script>
 
       <!-- 🚚 Scripts do módulo de Ocorrencia -->
   <script src="../assets/js/telassindico/ocorrencia/apiOcorrencia.js"></script>
@@ -225,7 +232,6 @@
   <script src="../assets/js/telassindico/mensagens/apiMensagens.js"></script>
   <script src="../assets/js/telassindico/mensagens/telasMensagens.js"></script>
   <script src="../assets/js/telassindico/mensagens/main.js"></script>
-
 
   <script src="../assets/js/sindico_menu.js"></script>
   <script src="../assets/js/logout.js"></script>

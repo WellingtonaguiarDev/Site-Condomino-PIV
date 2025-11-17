@@ -4,10 +4,18 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    // PEGAR TOKEN DO RECAPTCHA
+    const recaptcha_token = grecaptcha.getResponse();
+
+    if (!recaptcha_token) {
+      alert("Por favor, confirme que você não é um robô.");
+      return;
+    }
+
     // Coleta os dados do formulário
     const nome = form.nome.value.trim();
     const cpf = form.cpf.value.trim();
-    const telefone = form.telefone.value.trim();
+       const telefone = form.telefone.value.trim();
     const email = form.email.value.trim();
     const senha = form.senha.value.trim();
     const codigoCondominio = form.codigoCondominio.value.trim();
@@ -24,13 +32,13 @@ document.addEventListener("DOMContentLoaded", () => {
       user_type: "resident",
       apartment_number: apartamento,
       apartment_block: bloco,
-      condominium: codigoCondominio
+      condominium: codigoCondominio,
+      recaptcha_token: recaptcha_token   // <<--- AQUI FOI ADICIONADO
     };
 
     console.log("📤 Enviando JSON para o servidor:");
     console.log(JSON.stringify(userData, null, 2));
 
-    // URL limpa para evitar espaços e quebras
     let url = "https://api.porttusmart.tech/api/v1/users/persons/";
     console.log("🔍 URL original:", `"${url}"`);
     url = url.trim();
@@ -50,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         alert("✅ Cadastro realizado com sucesso!");
         form.reset();
+        grecaptcha.reset(); // reseta o recaptcha
         window.location.href = "../index.html";
       } else {
         let errorText;
