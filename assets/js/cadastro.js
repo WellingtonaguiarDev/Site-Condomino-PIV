@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
       password: senha,
       telephone: telefone,
       user_type: "resident",
-      number_apartment: apartamento,
-      block_apartment: bloco,
+      apartment_number: apartamento,
+      apartment_block: bloco,
       condominium: codigoCondominio,
       recaptcha_token: recaptcha_token   // <<--- AQUI FOI ADICIONADO
     };
