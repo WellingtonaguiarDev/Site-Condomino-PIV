@@ -1,15 +1,72 @@
 // ==========================================================
-// mainOcorrencias.js
+// ===== MAIN OCORRÊNCIAS =====
 // ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let ocorrenciasTbodyListener = null;
+
+  // ===== Funções Bloco/Apartamento Dinâmicos =====
+  async function getApartamentosDoCondominio() {
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (!cond) return [];
+
+    try {
+      const resposta = await listarApartamentos(); // função da API
+      const todos = resposta?.results || [];
+      return todos.filter(a => a.condominium === cond.code_condominium);
+    } catch (err) {
+      console.error("Erro ao carregar apartamentos:", err);
+      return [];
+    }
+  }
+
+  async function carregarBlocosOcorrencia() {
+    const apartamentos = await getApartamentosDoCondominio();
+    return [...new Set(apartamentos.map(a => a.block))];
+  }
+
+  async function carregarApartamentosOcorrencia(bloco) {
+    const apartamentos = await getApartamentosDoCondominio();
+    return apartamentos.filter(a => a.block === bloco);
+  }
+
+  async function prepararSelectsOcorrencia(form) {
+    const selectBloco = form.querySelector("#selectBlocoOcorrencia");
+    const selectApto = form.querySelector("#selectAptoOcorrencia");
+    if (!selectBloco || !selectApto) return;
+
+    const blocos = await carregarBlocosOcorrencia();
+    selectBloco.innerHTML =
+      `<option value="">Selecione o bloco</option>` +
+      blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+    selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+    selectApto.disabled = true;
+
+    selectBloco.addEventListener("change", async () => {
+      const blocoSel = selectBloco.value;
+      if (!blocoSel) {
+        selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+        selectApto.disabled = true;
+        return;
+      }
+
+      const aptos = await carregarApartamentosOcorrencia(blocoSel);
+      selectApto.innerHTML =
+        `<option value="">Selecione o apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+      selectApto.disabled = false;
+    });
+  }
 
   // ======== Tela de Cadastro ========
   async function carregarCadastro(ocorrencia = null) {
     content.innerHTML = telasOcorrencias["Registrar ocorrência"];
     const form = content.querySelector(".form-cadastro-ocorrencia");
     if (!form) return;
+
+    // Prepara selects dinâmicos
+    await prepararSelectsOcorrencia(form);
 
     if (ocorrencia) {
       const bloco =
@@ -38,6 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = telasOcorrencias["Histórico de ocorrências"];
     const tbody = content.querySelector("#tabelaOcorrenciasBody");
     if (!tbody) return;
+
+    const selectBloco = content.querySelector("#filtroBlocoOcorrencia");
+    const selectApto = content.querySelector("#filtroApartamentoOcorrencia");
+
+    if (selectBloco && selectApto) {
+      const blocos = await carregarBlocosOcorrencia();
+      selectBloco.innerHTML =
+        `<option value="">Filtrar por bloco</option>` +
+        blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+      selectBloco.addEventListener("change", async () => {
+        const blocoSel = selectBloco.value;
+        const aptos = await carregarApartamentosOcorrencia(blocoSel);
+        selectApto.innerHTML =
+          `<option value="">Filtrar por apartamento</option>` +
+          aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+        selectApto.disabled = !blocoSel;
+      });
+      selectApto.disabled = true;
+    }
 
     const ocorrencias = await listarOcorrencias();
 
@@ -132,9 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Ocorrência cadastrada com sucesso!");
       }
 
-      //limpa o form
       form.reset();
-
     } catch (err) {
       console.error("Erro ao salvar ocorrência:", err);
       alert("Não foi possível salvar a ocorrência. Verifique e tente novamente.");

@@ -25,12 +25,14 @@ const telasVeiculos = {
 
         <div class="form-group-veiculo">
           <label>Bloco</label>
-          <input type="text" name="bloco" placeholder="Ex: A" required>
+          <!-- Será substituído dinamicamente por um select -->
+          <input type="text" name="bloco" placeholder="Selecione o bloco" required>
         </div>
 
         <div class="form-group-veiculo">
           <label>Apartamento</label>
-          <input type="number" name="apartamento" placeholder="Ex: 101" required>
+          <!-- Será substituído dinamicamente por um select -->
+          <input type="number" name="apartamento" placeholder="Selecione o apartamento" required>
         </div>
 
         <div class="form-actions-veiculo">
@@ -48,6 +50,12 @@ const telasVeiculos = {
 
       <div class="historico-container-veiculo">
         <div class="historico-filtros-veiculo">
+          <select id="filtroBlocoVeiculo">
+            <option value="">Filtrar por bloco</option>
+          </select>
+          <select id="filtroApartamentoVeiculo">
+            <option value="">Filtrar por apartamento</option>
+          </select>
           <input type="text" id="filtroPlacaVeiculo" placeholder="Placa">
           <input type="text" id="filtroModeloVeiculo" placeholder="Modelo">
           <input type="text" id="filtroCorVeiculo" placeholder="Cor">

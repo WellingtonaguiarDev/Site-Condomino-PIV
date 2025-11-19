@@ -4,32 +4,115 @@
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let comunicadosTbodyListener = null;
-  let documentosTbodyListener = null;
 
+  // ------------------------------------------------------
+  // Carregar todos os apartamentos e filtrar pelo condomínio
+  // ------------------------------------------------------
+  async function getApartamentosDoCondominio() {
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (!cond) return [];
+
+    try {
+      const resposta = await listarApartamentos(); // → retorna count, next, results
+      const todos = resposta?.results || [];
+
+      // Filtrar pelo condomínio selecionado
+      return todos.filter(
+        a => a.condominium_detail?.code_condominium === cond.code_condominium
+      );
+    } catch (err) {
+      console.error("Erro ao carregar apartamentos:", err);
+      return [];
+    }
+  }
+
+  // ------------------------------------------------------
+  // Carregar blocos válidos
+  // ------------------------------------------------------
+  async function carregarBlocos() {
+    const apartamentos = await getApartamentosDoCondominio();
+    const blocos = [...new Set(apartamentos.map(a => a.block))].sort();
+    return blocos;
+  }
+
+  // ------------------------------------------------------
+  // Carregar apartamentos por bloco
+  // ------------------------------------------------------
+  async function carregarApartamentos(bloco) {
+    const apartamentos = await getApartamentosDoCondominio();
+    return apartamentos.filter(a => a.block === bloco);
+  }
+
+  // ------------------------------------------------------
+  // Preencher selects de bloco / apartamento
+  // ------------------------------------------------------
+  async function prepararSelectsComunicado(form) {
+    const selectBloco = form.querySelector("#selectBlocoComunicado");
+    const selectApto = form.querySelector("#selectApartamentoComunicado");
+
+    if (!selectBloco || !selectApto) return;
+
+    const blocos = await carregarBlocos();
+
+    selectBloco.innerHTML =
+      `<option value="">Selecione o bloco</option>` +
+      blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+    selectApto.innerHTML = `<option value="">Selecione um apartamento</option>`;
+    selectApto.disabled = true;
+
+    // --- Quando muda o bloco
+    selectBloco.addEventListener("change", async () => {
+      const blocoSel = selectBloco.value;
+
+      if (!blocoSel) {
+        selectApto.innerHTML = `<option value="">Selecione um apartamento</option>`;
+        selectApto.disabled = true;
+        return;
+      }
+
+      const aptos = await carregarApartamentos(blocoSel);
+
+      selectApto.innerHTML =
+        `<option value="">Selecione um apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+
+      selectApto.disabled = false;
+    });
+  }
+
+  // ------------------------------------------------------
+  // Renderizar Formulário de Novo Comunicado
+  // ------------------------------------------------------
   async function carregarCadastroComunicados() {
     content.innerHTML = telasComunicados["Novo comunicado"];
+
     const form = content.querySelector(".form-cadastro-comunicados");
     if (!form) return;
 
-    form.addEventListener("submit", async (e) => {
+    await prepararSelectsComunicado(form);
+
+    form.addEventListener("submit", async e => {
       e.preventDefault();
 
       const dados = {
         titulo: form.titulo.value.trim(),
         mensagem: form.mensagem.value.trim(),
-        bloco: form.bloco.value.trim(),
-        apartamento: form.apartamento.value.trim(),
+        bloco: form.bloco.value.trim() || form.querySelector("#selectBlocoComunicado").value,
+        apartamento: form.apartamento.value.trim() || form.querySelector("#selectApartamentoComunicado").value,
         communication_type: "notice"
       };
 
       await criarComunicado(dados);
 
-      //limpa o form
       form.reset();
-
+      await prepararSelectsComunicado(form);
     });
   }
 
+  // ------------------------------------------------------
+  // Renderizar Histórico de Comunicados
+  // ------------------------------------------------------
   async function carregarHistoricoComunicados() {
     content.innerHTML = telasComunicados["Histórico de comunicados"];
     const tbody = content.querySelector("#tabelaComunicadosBody");
@@ -40,13 +123,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const comunicados = await listarComunicados();
+      const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
-      if (!Array.isArray(comunicados) || comunicados.length === 0) {
+      const filtrados = (comunicados || []).filter(c => {
+        const code =
+          c.recipients?.[0]?.apartment?.condominium_detail?.code_condominium;
+        return code === cond.code_condominium;
+      });
+
+      if (!filtrados.length) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum comunicado encontrado.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = comunicados
+      tbody.innerHTML = filtrados
         .map(c => {
           const bloco = c.recipients?.[0]?.apartment?.block || "-";
           const apartamento = c.recipients?.[0]?.apartment?.number || "-";
@@ -63,7 +153,8 @@ document.addEventListener("DOMContentLoaded", () => {
           `;
         })
         .join("");
-    } catch {
+    } catch (err) {
+      console.error("Erro ao carregar comunicados:", err);
       tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:red;">Erro ao carregar comunicados.</td></tr>`;
     } finally {
       loading.style.display = "none";
@@ -71,19 +162,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ------------------------------------------------------
+  // Listener de ações da tabela de comunicados
+  // ------------------------------------------------------
   function attachComunicadosTableListener() {
     const tbody = content.querySelector("#tabelaComunicadosBody");
     if (!tbody) return;
 
     if (comunicadosTbodyListener) {
-      try { tbody.removeEventListener("click", comunicadosTbodyListener); } catch {}
+      tbody.removeEventListener("click", comunicadosTbodyListener);
       comunicadosTbodyListener = null;
     }
 
-    comunicadosTbodyListener = async (e) => {
+    comunicadosTbodyListener = async e => {
       const btnExcluir = e.target.closest(".btn-excluir-comunicados");
       if (btnExcluir) {
-        e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este comunicado?")) {
           await deletarComunicado(id);
@@ -95,12 +188,15 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", comunicadosTbodyListener);
   }
 
+  // ------------------------------------------------------
+  // Cadastro de Documentos
+  // ------------------------------------------------------
   async function carregarCadastroDocumentos() {
     content.innerHTML = telasComunicados["Cadastro de documentos"];
     const form = content.querySelector(".form-cadastro-documento-comunicados");
     if (!form) return;
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const formData = new FormData(form);
       const result = await criarDocumento(formData);
@@ -108,6 +204,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // ------------------------------------------------------
+  // Documentos do condomínio
+  // ------------------------------------------------------
   async function carregarDocumentosCondominio() {
     content.innerHTML = telasComunicados["Documentos do condomínio"];
     const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
@@ -118,7 +217,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const documentos = await listarDocumentos();
-
       if (!Array.isArray(documentos) || documentos.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">Nenhum documento encontrado.</td></tr>`;
         return;
@@ -152,15 +250,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = content.querySelector("#tabelaDocumentosComunicadosBody");
     if (!tbody) return;
 
-    if (documentosTbodyListener) {
-      try { tbody.removeEventListener("click", documentosTbodyListener); } catch {}
-      documentosTbodyListener = null;
-    }
-
-    documentosTbodyListener = async (e) => {
+    tbody.removeEventListener("click", documentosTbodyListener);
+    documentosTbodyListener = async e => {
       const btnExcluir = e.target.closest(".btn-excluir-documento");
       if (btnExcluir) {
-        e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este documento?")) {
           await deletarDocumento(id);
@@ -168,14 +261,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     };
-
     tbody.addEventListener("click", documentosTbodyListener);
   }
 
+  // ------------------------------------------------------
+  // Navegação pelo Menu
+  // ------------------------------------------------------
   const menu = document.querySelector("#menuComunicados");
   if (menu) {
-    menu.addEventListener("click", (e) => {
+    menu.addEventListener("click", e => {
       if (!e.target.classList.contains("subitem")) return;
+
       const item = e.target.textContent.trim();
 
       if (item === "Novo comunicado") carregarCadastroComunicados();

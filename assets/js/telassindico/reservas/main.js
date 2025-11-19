@@ -1,15 +1,72 @@
 // ==========================================================
-// mainReservas.js
+// ===== MAIN RESERVAS =====
 // ==========================================================
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let reservasTbodyListener = null;
+
+  // ===== Funções Bloco/Apartamento Dinâmicos =====
+  async function getApartamentosDoCondominio() {
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (!cond) return [];
+
+    try {
+      const resposta = await listarApartamentos(); // função da API
+      const todos = resposta?.results || [];
+      return todos.filter(a => a.condominium === cond.code_condominium);
+    } catch (err) {
+      console.error("Erro ao carregar apartamentos:", err);
+      return [];
+    }
+  }
+
+  async function carregarBlocosReserva() {
+    const apartamentos = await getApartamentosDoCondominio();
+    return [...new Set(apartamentos.map(a => a.block))];
+  }
+
+  async function carregarApartamentosReserva(bloco) {
+    const apartamentos = await getApartamentosDoCondominio();
+    return apartamentos.filter(a => a.block === bloco);
+  }
+
+  async function prepararSelectsReserva(form) {
+    const selectBloco = form.querySelector("#selectBlocoReserva");
+    const selectApto = form.querySelector("#selectAptoReserva");
+    if (!selectBloco || !selectApto) return;
+
+    const blocos = await carregarBlocosReserva();
+    selectBloco.innerHTML =
+      `<option value="">Selecione o bloco</option>` +
+      blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+    selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+    selectApto.disabled = true;
+
+    selectBloco.addEventListener("change", async () => {
+      const blocoSel = selectBloco.value;
+      if (!blocoSel) {
+        selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+        selectApto.disabled = true;
+        return;
+      }
+
+      const aptos = await carregarApartamentosReserva(blocoSel);
+      selectApto.innerHTML =
+        `<option value="">Selecione o apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+      selectApto.disabled = false;
+    });
+  }
 
   // ======== Tela de Cadastro ========
   async function carregarCadastro(reserva = null) {
     content.innerHTML = telasReservas["Cadastro de reservas"];
     const form = content.querySelector(".form-cadastro-reserva");
     if (!form) return;
+
+    // Prepara selects dinâmicos
+    await prepararSelectsReserva(form);
 
     if (reserva) {
       form.space.value = reserva.space || "";
@@ -37,6 +94,26 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = telasReservas["Histórico de reservas"];
     const tbody = content.querySelector("#tabelaReservasBody");
     if (!tbody) return;
+
+    // Preencher filtros de blocos/apartamentos
+    const selectBloco = content.querySelector("#filtroBlocoReserva");
+    const selectApto = content.querySelector("#filtroApartamentoReserva");
+    if (selectBloco && selectApto) {
+      const blocos = await carregarBlocosReserva();
+      selectBloco.innerHTML =
+        `<option value="">Filtrar por bloco</option>` +
+        blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+      selectBloco.addEventListener("change", async () => {
+        const blocoSel = selectBloco.value;
+        const aptos = await carregarApartamentosReserva(blocoSel);
+        selectApto.innerHTML =
+          `<option value="">Filtrar por apartamento</option>` +
+          aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+        selectApto.disabled = !blocoSel;
+      });
+      selectApto.disabled = true;
+    }
 
     const reservas = await listarReservas();
 
@@ -131,13 +208,10 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Reserva cadastrada com sucesso!");
       }
 
-      //limpa o form
       form.reset();
-
     } catch (err) {
       console.error("Erro ao salvar reserva:", err);
       alert("Não foi possível salvar a reserva. Verifique e tente novamente.");
-      // histórico NÃO é carregado
     }
   });
 

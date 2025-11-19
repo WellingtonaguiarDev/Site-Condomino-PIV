@@ -58,7 +58,7 @@ async function listarVisitantes() {
   }
 }
 
-// Atualizar visitante
+// Atualizar
 async function atualizarVisitante(id, dados) {
   const token = localStorage.getItem("access_token");
   const condominio = JSON.parse(localStorage.getItem("condominioSelecionado"));
@@ -68,7 +68,7 @@ async function atualizarVisitante(id, dados) {
     cpf_visitor: dados.cpf,
     block_apartment: dados.bloco,
     number_apartment: Number(dados.apartamento),
-    code_condominium: condominio?.code_condominium,
+    code_condominium: condominio.code_condominium,
   };
 
   try {
@@ -92,7 +92,7 @@ async function atualizarVisitante(id, dados) {
   }
 }
 
-// Deletar visitante
+// Deletar
 async function deletarVisitante(id) {
   const token = localStorage.getItem("access_token");
   try {

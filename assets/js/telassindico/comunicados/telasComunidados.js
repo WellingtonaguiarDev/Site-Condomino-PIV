@@ -21,11 +21,15 @@ const telasComunicados = {
         <div class="form-group-comunicados endereco-group-comunicados">
           <div>
             <label>Bloco</label>
-            <input type="text" name="bloco" placeholder="Ex: A" required>
+            <select name="bloco" id="selectBlocoComunicado" required>
+              <option value="">Selecione o bloco</option>
+            </select>
           </div>
           <div>
             <label>Apartamento</label>
-            <input type="text" name="apartamento" placeholder="Ex: 101" required>
+            <select name="apartamento" id="selectApartamentoComunicado" required>
+              <option value="">Selecione o apartamento</option>
+            </select>
           </div>
         </div>
 
@@ -36,6 +40,7 @@ const telasComunicados = {
       </form>
     </div>
   `,
+
 
   "Histórico de comunicados": `
     <div class="content-top-comunicados">

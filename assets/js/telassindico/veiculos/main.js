@@ -6,22 +6,73 @@ document.addEventListener("DOMContentLoaded", () => {
   let veiculoEditando = null;
   let veiculosTbodyListener = null;
 
-  // --- Renderização das telas ---
+  // ----- Funções auxiliares -----
+  async function getApartamentosDoCondominio() {
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (!cond) return [];
+
+    try {
+      const resposta = await listarApartamentos(); // lista todos os apartamentos
+      const todos = resposta?.results || [];
+      return todos.filter(a => a.condominium === cond.code_condominium);
+    } catch (err) {
+      console.error("Erro ao carregar apartamentos:", err);
+      return [];
+    }
+  }
+
+  async function carregarBlocos() {
+    const apartamentos = await getApartamentosDoCondominio();
+    return [...new Set(apartamentos.map(a => a.block))];
+  }
+
+  async function carregarApartamentosPorBloco(bloco) {
+    const apartamentos = await getApartamentosDoCondominio();
+    return apartamentos.filter(a => a.block === bloco);
+  }
+
+  // ----- Renderização Cadastro -----
   async function carregarCadastro(veiculo = null) {
     content.innerHTML = telasVeiculos["Cadastro de veículos de moradores"];
-
     const form = content.querySelector(".form-cadastro-veiculo");
     if (!form) return;
 
+    // Carregar blocos no select
+    const selectBloco = document.createElement("select");
+    selectBloco.name = "bloco";
+    const blocos = await carregarBlocos();
+    selectBloco.innerHTML =
+      `<option value="">Selecione o bloco</option>` +
+      blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+    const blocoInput = form.querySelector("input[name=bloco]");
+    blocoInput.replaceWith(selectBloco);
+
+    const selectApto = document.createElement("select");
+    selectApto.name = "apartamento";
+    selectApto.innerHTML = `<option value="">Selecione um apartamento</option>`;
+    const aptoInput = form.querySelector("input[name=apartamento]");
+    aptoInput.replaceWith(selectApto);
+
+    // Quando muda o bloco, carrega apartamentos
+    selectBloco.addEventListener("change", async () => {
+      const aptos = await carregarApartamentosPorBloco(selectBloco.value);
+      selectApto.innerHTML =
+        `<option value="">Selecione um apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+    });
+
     if (veiculo) {
-      const bloco = veiculo.owner?.apartment?.block || veiculo.apartment_details?.block || "";
-      const apartamento = veiculo.owner?.apartment?.number || veiculo.apartment_details?.number || "";
+      selectBloco.value = veiculo.owner?.apartment?.block || veiculo.apartment_details?.block || "";
+      const aptos = await carregarApartamentosPorBloco(selectBloco.value);
+      selectApto.innerHTML =
+        `<option value="">Selecione um apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+      selectApto.value = veiculo.owner?.apartment?.number || veiculo.apartment_details?.number || "";
 
       form.placa.value = veiculo.plate || "";
       form.modelo.value = veiculo.model || "";
       form.cor.value = veiculo.color || "";
-      form.bloco.value = bloco;
-      form.apartamento.value = apartamento;
       form.dataset.id = veiculo.id;
 
       const btnSalvar = form.querySelector(".btn-salvar-veiculo");
@@ -33,25 +84,32 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // ----- Renderização Histórico -----
   async function carregarHistorico() {
     content.innerHTML = telasVeiculos["Histórico de veículos"];
     const tbody = content.querySelector(".tabela-historico-veiculo-body");
     if (!tbody) return;
 
     const veiculos = await listarVeiculos();
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
 
-    tbody.innerHTML = veiculos.length
-      ? veiculos.map((v) => {
-          const bloco = v.owner?.apartment?.block || v.apartment_details?.block || "";
-          const apartamento = v.owner?.apartment?.number || v.apartment_details?.number || "";
+    // Filtrar por condomínio
+    const veiculosFiltrados = veiculos.filter(v =>
+      v.condominium?.code_condominium === cond?.code_condominium
+    );
+
+    tbody.innerHTML = veiculosFiltrados.length
+      ? veiculosFiltrados.map(v => {
+          const bloco = v.owner?.apartment?.block || v.apartment_details?.block || "-";
+          const apto = v.owner?.apartment?.number || v.apartment_details?.number || "-";
 
           return `
             <tr>
               <td>${v.plate || "-"}</td>
               <td>${v.model || "-"}</td>
               <td>${v.color || "-"}</td>
-              <td>${bloco || "-"}</td>
-              <td>${apartamento || "-"}</td>
+              <td>${bloco}</td>
+              <td>${apto}</td>
               <td>
                 <button class="btn-editar-veiculo" data-id="${v.id}">Editar</button>
                 <button class="btn-excluir-veiculo" data-id="${v.id}">Excluir</button>
@@ -64,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
     attachVeiculosTableListener();
   }
 
-  // --- Listener da tabela ---
+  // ----- Listener da Tabela -----
   function attachVeiculosTableListener() {
     const tbody = content.querySelector(".tabela-historico-veiculo-body");
     if (!tbody) return;
@@ -81,13 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const id = btnExcluir.dataset.id;
         if (!id) return;
         if (confirm("Deseja excluir este veículo?")) {
-          try {
-            await deletarVeiculo(id);
-          } catch (err) {
-            console.error(err);
-          } finally {
-            await carregarHistorico();
-          }
+          try { await deletarVeiculo(id); } catch (err) { console.error(err); }
+          finally { await carregarHistorico(); }
         }
         return;
       }
@@ -97,15 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         const id = btnEditar.dataset.id;
         if (!id) return;
-        try {
-          const veiculos = await listarVeiculos();
-          const veiculo = veiculos.find((v) => String(v.id) === String(id));
-          if (veiculo) {
-            veiculoEditando = id;
-            await carregarCadastro(veiculo);
-          }
-        } catch (err) {
-          console.error(err);
+        const veiculos = await listarVeiculos();
+        const veiculo = veiculos.find(v => String(v.id) === String(id));
+        if (veiculo) {
+          veiculoEditando = id;
+          await carregarCadastro(veiculo);
         }
         return;
       }
@@ -114,15 +163,10 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.addEventListener("click", veiculosTbodyListener);
   }
 
-  // --- Submissão do formulário ---
+  // ----- Submissão do Formulário -----
   content.addEventListener("submit", async (e) => {
     const form = e.target;
-
-    if (
-      !form.classList.contains("form-cadastro-veiculo") ||
-      !form.placa || !form.modelo || !form.cor
-    ) return;
-
+    if (!form.classList.contains("form-cadastro-veiculo")) return;
     e.preventDefault();
 
     const dados = {
@@ -133,22 +177,18 @@ document.addEventListener("DOMContentLoaded", () => {
       apartamento: form.apartamento?.value.trim() || "",
     };
 
-    let sucesso = false;
     try {
       if (veiculoEditando) {
-        sucesso = await atualizarVeiculo(veiculoEditando, dados);
+        await atualizarVeiculo(veiculoEditando, dados);
         veiculoEditando = null;
       } else {
-        sucesso = await criarVeiculo(dados);
+        await criarVeiculo(dados);
       }
-    } catch (err) {
-      console.error(err);
-    }
-      //limpa o form
-      form.reset();
+    } catch (err) { console.error(err); }
+    form.reset();
   });
 
-  // --- Navegação do menu ---
+  // ----- Menu -----
   const menu = document.querySelector("#menuVeiculos");
   if (menu) {
     menu.addEventListener("click", (e) => {

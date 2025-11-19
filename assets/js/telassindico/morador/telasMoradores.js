@@ -1,6 +1,3 @@
-// ==========================================================
-// telasMoradores.js
-// ==========================================================
 const telasMoradores = {
   "Cadastro de moradores": `
     <div class="content-top-morador">
@@ -30,12 +27,16 @@ const telasMoradores = {
 
         <div class="form-group-morador">
           <label>Bloco</label>
-          <input type="text" name="bloco" placeholder="Bloco" required>
+          <select name="bloco" id="selectBlocoMorador" required>
+            <option value="">Selecione o bloco</option>
+          </select>
         </div>
 
         <div class="form-group-morador">
           <label>Apartamento</label>
-          <input type="number" name="apartamento" placeholder="Número do apartamento" required>
+          <select name="apartamento" id="selectAptoMorador" required>
+            <option value="">Selecione um apartamento</option>
+          </select>
         </div>
 
         <div class="form-actions-morador">
@@ -55,14 +56,10 @@ const telasMoradores = {
         <div class="historico-filtros-morador">
           <select name="bloco" id="filtroBlocoMorador">
             <option value="">Filtrar por bloco</option>
-            <option value="A">Bloco A</option>
-            <option value="B">Bloco B</option>
           </select>
 
           <select name="apartamento" id="filtroApartamentoMorador">
             <option value="">Filtrar por apartamento</option>
-            <option value="101">101</option>
-            <option value="102">102</option>
           </select>
 
           <input type="text" id="filtroPesquisaMorador" placeholder="Pesquisar...">
@@ -84,6 +81,7 @@ const telasMoradores = {
             <tbody id="tabelaMoradoresBody"></tbody>
           </table>
         </div>
+
         <div id="loadingHistoricoMorador" style="display:none;text-align:center;padding:20px;">
           Carregando moradores...
         </div>

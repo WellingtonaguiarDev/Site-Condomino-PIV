@@ -1,15 +1,4 @@
 /* ============================= */
-/* ===== VARIÁVEIS GLOBAIS ===== */
-/* ============================= */
-:root {
-  --border-color: #ccc;
-  --accent-color: #007b57;
-  --warning-color: #f2b200;
-  --text-light: #fff;
-  --text-dark: #222;
-}
-
-/* ============================= */
 /* ===== ESTILOS OCORRÊNCIA ==== */
 /* ============================= */
 
@@ -42,6 +31,7 @@
   border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.1);
   color: var(--text-light);
+  font-size: 16px;
 }
 
 .form-group-ocorrencia textarea {
@@ -52,6 +42,20 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
+}
+
+.form-group-ocorrencia-endereco select {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-size: 16px;
+}
+
+.form-group-ocorrencia-endereco select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .form-actions-ocorrencia {
@@ -108,6 +112,11 @@
   border: 1px solid var(--border-color);
   background: white;
   color: var(--text-dark);
+}
+
+.historico-filtros-ocorrencia select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .historico-filtros-ocorrencia button {
@@ -177,28 +186,4 @@
 
 .btn-excluir-ocorrencia:hover {
   background-color: #a71d2a;
-}
-
-/* ===== Botão Excluir - Documentos ===== */
-.btn-excluir-documento {
-  background-color: #dc3545;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-excluir-documento:hover {
-  background-color: #a71d2a;
-}
-
-/* Campos de endereço igual ao padrão dos outros campos do formulário */
-.form-group-ocorrencia-endereco input {
-  padding: 5px;
-  border-radius: 5px;
-  border: 1px solid var(--border-color);
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-light);
-  font-size: 16px; /* igual aos outros campos */
 }

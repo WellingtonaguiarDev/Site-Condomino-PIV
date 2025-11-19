@@ -20,12 +20,16 @@ const telasVisitantes = {
 
         <div class="form-group-visitante">
           <label>Bloco</label>
-          <input type="text" name="bloco" placeholder="Bloco">
+          <select name="bloco" id="selectBlocoVisitante" required>
+            <option value="">Selecione o bloco</option>
+          </select>
         </div>
 
         <div class="form-group-visitante">
           <label>Apartamento</label>
-          <input type="text" name="apartamento" placeholder="Número do apartamento">
+          <select name="apartamento" id="selectAptoVisitante" required>
+            <option value="">Selecione o apartamento</option>
+          </select>
         </div>
 
         <div class="form-actions-visitante">
@@ -45,14 +49,10 @@ const telasVisitantes = {
         <div class="historico-filtros-visitante">
           <select id="filtroBlocoVisitante">
             <option value="">Filtrar por bloco</option>
-            <option value="blocoA">Bloco A</option>
-            <option value="blocoB">Bloco B</option>
           </select>
 
           <select id="filtroApartamentoVisitante">
             <option value="">Filtrar por apartamento</option>
-            <option value="101">101</option>
-            <option value="102">102</option>
           </select>
 
           <input type="text" placeholder="Pesquisar..." id="searchInputVisitante">
@@ -71,9 +71,7 @@ const telasVisitantes = {
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody id="visitantesTableBody">
-              <!-- Visitantes serão carregados aqui -->
-            </tbody>
+            <tbody id="visitantesTableBody"></tbody>
           </table>
         </div>
       </div>

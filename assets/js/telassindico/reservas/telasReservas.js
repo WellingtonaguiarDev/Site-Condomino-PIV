@@ -1,5 +1,5 @@
 // ==========================================================
-// telasReservas.js
+// ===== TELAS RESERVAS =====
 // ==========================================================
 const telasReservas = {
   "Cadastro de reservas": `
@@ -23,12 +23,16 @@ const telasReservas = {
 
         <div class="form-group-reserva">
           <label>Bloco</label>
-          <input type="text" name="apartment_block" placeholder="Bloco" required>
+          <select name="apartment_block" id="selectBlocoReserva" required>
+            <option value="">Selecione o bloco</option>
+          </select>
         </div>
 
         <div class="form-group-reserva">
           <label>Apartamento</label>
-          <input type="text" name="apartment_code" placeholder="Número do apartamento" required>
+          <select name="apartment_code" id="selectAptoReserva" required disabled>
+            <option value="">Selecione o apartamento</option>
+          </select>
         </div>
 
         <div class="form-group-reserva">
@@ -61,6 +65,14 @@ const telasReservas = {
 
       <div class="historico-container-reserva">
         <div class="historico-filtros-reserva">
+          <select id="filtroBlocoReserva">
+            <option value="">Filtrar por bloco</option>
+          </select>
+
+          <select id="filtroApartamentoReserva" disabled>
+            <option value="">Filtrar por apartamento</option>
+          </select>
+
           <input type="text" id="filtroEspacoReserva" placeholder="Filtrar por espaço...">
           <button class="btn-buscar-reserva" id="btnBuscarReserva">Buscar</button>
           <button class="btn-limpar-reserva" id="btnLimparReserva">Limpar</button>

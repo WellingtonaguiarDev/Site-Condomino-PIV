@@ -1,8 +1,8 @@
 // ==========================================================
-// telasOcorrencias.js
+// ===== TELAS OCORRÊNCIAS =====
 // ==========================================================
 const telasOcorrencias = {
-    "Registrar ocorrência": `
+  "Registrar ocorrência": `
     <div class="content-top-ocorrencia">
       <h1>Registrar Ocorrência</h1>
       <p class="lead">Preencha os dados para registrar uma nova ocorrência.</p>
@@ -31,11 +31,15 @@ const telasOcorrencias = {
         <div class="form-group-ocorrencia-endereco">
           <div>
             <label>Bloco</label>
-            <input type="text" name="bloco" placeholder="Ex: A" required>
+            <select name="bloco" id="selectBlocoOcorrencia" required>
+              <option value="">Selecione o bloco</option>
+            </select>
           </div>
           <div>
             <label>Apartamento</label>
-            <input type="text" name="apartamento" placeholder="Ex: 101" required>
+            <select name="apartamento" id="selectAptoOcorrencia" required disabled>
+              <option value="">Selecione o apartamento</option>
+            </select>
           </div>
         </div>
 
@@ -47,23 +51,19 @@ const telasOcorrencias = {
     </div>
   `,
 
-    "Histórico de ocorrências": `
+  "Histórico de ocorrências": `
     <div class="content-top-ocorrencia">
       <h1>Histórico de Ocorrências</h1>
       <p class="lead">Lista das ocorrências registradas e seu status.</p>
 
       <div class="historico-container-ocorrencia">
         <div class="historico-filtros-ocorrencia">
-          <select name="bloco" id="filtroBlocoOcorrencia">
+          <select id="filtroBlocoOcorrencia">
             <option value="">Filtrar por bloco</option>
-            <option value="A">Bloco A</option>
-            <option value="B">Bloco B</option>
           </select>
 
-          <select name="apartamento" id="filtroApartamentoOcorrencia">
+          <select id="filtroApartamentoOcorrencia" disabled>
             <option value="">Filtrar por apartamento</option>
-            <option value="101">101</option>
-            <option value="102">102</option>
           </select>
 
           <input type="text" id="filtroPesquisaOcorrencia" placeholder="Pesquisar...">

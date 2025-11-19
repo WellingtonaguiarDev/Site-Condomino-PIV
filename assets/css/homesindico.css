@@ -586,3 +586,15 @@ html, body {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Global: todos os selects terão texto preto e fundo branco */
+select {
+  color: #000;            /* texto preto */
+  background-color: #fff;  /* fundo branco */
+}
+
+/* Opcional: garante que as opções também fiquem pretas */
+select option {
+  color: #000;
+  background-color: #fff;
+}

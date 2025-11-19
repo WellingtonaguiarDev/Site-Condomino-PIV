@@ -5,11 +5,68 @@ document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let entregasTbodyListener = null;
 
+  // --- Funções de Blocos e Apartamentos Dinâmicos ---
+  async function getApartamentosDoCondominio() {
+    const cond = JSON.parse(localStorage.getItem("condominioSelecionado"));
+    if (!cond) return [];
+
+    try {
+      const resposta = await listarApartamentos(); // função da API
+      const todos = resposta?.results || [];
+      return todos.filter(a => a.condominium === cond.code_condominium);
+    } catch (err) {
+      console.error("Erro ao carregar apartamentos:", err);
+      return [];
+    }
+  }
+
+  async function carregarBlocosEntrega() {
+    const apartamentos = await getApartamentosDoCondominio();
+    return [...new Set(apartamentos.map(a => a.block))];
+  }
+
+  async function carregarApartamentosEntrega(bloco) {
+    const apartamentos = await getApartamentosDoCondominio();
+    return apartamentos.filter(a => a.block === bloco);
+  }
+
+  async function prepararSelectsEntrega(form) {
+    const selectBloco = form.querySelector("#selectBlocoEntrega");
+    const selectApto = form.querySelector("#selectAptoEntrega");
+    if (!selectBloco || !selectApto) return;
+
+    const blocos = await carregarBlocosEntrega();
+    selectBloco.innerHTML =
+      `<option value="">Selecione o bloco</option>` +
+      blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+    selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+    selectApto.disabled = true;
+
+    selectBloco.addEventListener("change", async () => {
+      const blocoSel = selectBloco.value;
+      if (!blocoSel) {
+        selectApto.innerHTML = `<option value="">Selecione o apartamento</option>`;
+        selectApto.disabled = true;
+        return;
+      }
+
+      const aptos = await carregarApartamentosEntrega(blocoSel);
+      selectApto.innerHTML =
+        `<option value="">Selecione o apartamento</option>` +
+        aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+      selectApto.disabled = false;
+    });
+  }
+
   // ===== CADASTRO ENTREGA =====
   async function carregarCadastro(entrega = null) {
     content.innerHTML = telasEntregas["Cadastro de entregas"];
     const form = content.querySelector(".form-cadastro-entrega");
     if (!form) return;
+
+    // Prepara selects dinâmicos
+    await prepararSelectsEntrega(form);
 
     if (entrega) {
       form.codigo.value = entrega.order_code || "";
@@ -27,6 +84,26 @@ document.addEventListener("DOMContentLoaded", () => {
     content.innerHTML = telasEntregas["Histórico de entregas"];
     const tbody = content.querySelector("#tabelaEntregasBody");
     if (!tbody) return;
+
+    // Preencher selects do filtro
+    const selectBloco = content.querySelector("#filtroBlocoEntrega");
+    const selectApto = content.querySelector("#filtroApartamentoEntrega");
+    if (selectBloco && selectApto) {
+      const blocos = await carregarBlocosEntrega();
+      selectBloco.innerHTML =
+        `<option value="">Filtrar por bloco</option>` +
+        blocos.map(b => `<option value="${b}">${b}</option>`).join("");
+
+      selectBloco.addEventListener("change", async () => {
+        const blocoSel = selectBloco.value;
+        const aptos = await carregarApartamentosEntrega(blocoSel);
+        selectApto.innerHTML =
+          `<option value="">Filtrar por apartamento</option>` +
+          aptos.map(a => `<option value="${a.number}">${a.number}</option>`).join("");
+        selectApto.disabled = !blocoSel;
+      });
+      selectApto.disabled = true;
+    }
 
     const entregas = await listarEntregas();
 
@@ -106,7 +183,6 @@ document.addEventListener("DOMContentLoaded", () => {
         await criarEntrega(dados);
       }
 
-      //limpa o form
       form.reset();
 
     } catch (err) {

@@ -15,12 +15,16 @@ const telasEntregas = {
 
         <div class="form-group-entrega">
           <label>Bloco</label>
-          <input type="text" name="bloco" placeholder="Ex: A" required>
+          <select name="bloco" id="selectBlocoEntrega">
+            <option value="">Selecione o bloco</option>
+          </select>
         </div>
 
         <div class="form-group-entrega">
           <label>Apartamento</label>
-          <input type="number" name="apartamento" placeholder="Ex: 101" required>
+          <select name="apartamento" id="selectAptoEntrega" disabled>
+            <option value="">Selecione o apartamento</option>
+          </select>
         </div>
 
         <div class="form-group-entrega">
@@ -46,14 +50,10 @@ const telasEntregas = {
         <div class="historico-filtros-entrega" style="margin-bottom:15px;">
           <select id="filtroBlocoEntrega">
             <option value="">Filtrar por bloco</option>
-            <option value="blocoA">Bloco A</option>
-            <option value="blocoB">Bloco B</option>
           </select>
 
-          <select id="filtroApartamentoEntrega">
+          <select id="filtroApartamentoEntrega" disabled>
             <option value="">Filtrar por apartamento</option>
-            <option value="101">101</option>
-            <option value="102">102</option>
           </select>
 
           <input type="text" placeholder="Pesquisar..." id="searchInputEntrega">
