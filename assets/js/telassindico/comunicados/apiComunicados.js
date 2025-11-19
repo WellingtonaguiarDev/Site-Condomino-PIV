@@ -22,8 +22,8 @@ async function criarComunicado(dados) {
   const payload = {
     title: dados.titulo || "Sem título",
     message: dados.mensagem,
-    apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
-    apartment_block: dados.bloco || null,
+    number_apartment: dados.apartamento ? Number(dados.apartamento) : null,
+    block_apartment: dados.bloco || null,
     code_condominium: condominio.code_condominium,
     communication_type: "notice"
   };

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
   <!-- reCAPTCHA v2 -->
   <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
+
 <body>
   <div class="container">
     <!-- Logo e título -->
@@ -26,7 +28,7 @@
       <input type="text" name="nome" placeholder="Nome completo" required>
       <input type="text" name="cpf" placeholder="CPF" required>
       <input type="tel" name="telefone" placeholder="Telefone" required>
-      <input type="email" name="email" placeholder="E-mail" required>      
+      <input type="email" name="email" placeholder="E-mail" required>
 
       <!-- Novo campo: código do condomínio -->
       <input type="text" name="codigoCondominio" placeholder="Digite o código do condomínio" required>
@@ -41,9 +43,7 @@
       <input type="password" name="senha" placeholder="Senha" required>
 
       <!-- reCAPTCHA -->
-      <div 
-        class="g-recaptcha" 
-        data-sitekey="6Ld0XQssAAAAAOisVdWWEvGONekE0uCBODWwgQPg">
+      <div class="g-recaptcha" data-sitekey="6Ld0XQssAAAAAOisVdWWEvGONekE0uCBODWwgQPg">
       </div>
 
       <!-- Botão de envio -->
@@ -63,5 +63,24 @@
   </div>
 
   <script src="../assets/js/cadastro.js"></script>
+
+  <!-- ========================================================= -->
+  <!--     AUTO-PREENCHER CAMPOS COM DADOS DO GOOGLE LOGIN       -->
+  <!-- ========================================================= -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const nome = localStorage.getItem("google_name");
+      const email = localStorage.getItem("google_email");
+
+      if (nome) {
+        document.querySelector("input[name='nome']").value = nome;
+      }
+
+      if (email) {
+        document.querySelector("input[name='email']").value = email;
+      }
+    });
+  </script>
 </body>
+
 </html>

@@ -144,9 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error(err);
     }
-
-    // Só muda de tela se a operação foi bem-sucedida
-    if (sucesso) await carregarHistorico();
+      //limpa o form
+      form.reset();
   });
 
   // --- Navegação do menu ---

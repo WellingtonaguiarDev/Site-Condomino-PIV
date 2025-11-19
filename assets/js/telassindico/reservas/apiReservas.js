@@ -16,8 +16,8 @@ async function criarReserva(dados) {
 
   const payload = {
     space: dados.space,
-    apartment_block: dados.apartment_block,
-    apartment_number: dados.apartment_code,
+    block_apartment: dados.apartment_block,
+    number_apartment: dados.apartment_code,
     code_condominium: condominio.code_condominium,
     start_time,
     end_time,

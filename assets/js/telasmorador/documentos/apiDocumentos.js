@@ -20,7 +20,9 @@ async function listarDocumentos() {
   const data = await res.json();
   const lista = data.results || [];
 
+  // 🔹 Retorna também o 'id' do documento
   return lista.map(doc => ({
+    id: doc.id,                      // <-- id adicionado
     titulo: doc.title || "-",
     descricao: doc.content || "-",
     arquivo: doc.file_complement || null

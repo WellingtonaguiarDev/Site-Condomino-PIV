@@ -30,10 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
       password: senha,
       telephone: telefone,
       user_type: "resident",
-      apartment_number: Number(apartamento),
-      apartment_block: bloco,
-      condominium: codigoCondominio,
-      recaptcha_token: recaptcha_token   // <<--- AQUI FOI ADICIONADO
+      number_apartment: Number(apartamento),
+      block_apartment: bloco,
+      code_condominium: codigoCondominio,
+      recaptcha_token: recaptcha_token 
     };
 
     console.log("📤 Enviando JSON para o servidor:");

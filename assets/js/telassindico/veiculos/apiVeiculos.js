@@ -17,8 +17,8 @@ async function criarVeiculo(dados) {
     model: dados.modelo,
     color: dados.cor,
     code_condominium: condominio.code_condominium,
-    apartment_number: Number(dados.apartamento),
-    apartment_block: dados.bloco
+    number_apartment: Number(dados.apartamento),
+    block_apartment: dados.bloco
   };
 
   try {
@@ -77,8 +77,8 @@ async function atualizarVeiculo(id, dados) {
     model: dados.modelo,
     color: dados.cor,
     code_condominium: condominio.code_condominium,
-    apartment_number: Number(dados.apartamento),
-    apartment_block: dados.bloco
+    number_apartment: Number(dados.apartamento),
+    block_apartment: dados.bloco
   };
 
   try {

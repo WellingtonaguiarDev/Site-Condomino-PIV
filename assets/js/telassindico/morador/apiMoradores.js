@@ -18,8 +18,8 @@ async function criarMorador(dados) {
     cpf: dados.cpf,
     phone: dados.telefone,
     code_condominium: condominio.code_condominium,
-    apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
-    apartment_block: dados.bloco || null,
+    number_apartment: dados.apartamento ? Number(dados.apartamento) : null,
+    block_apartment: dados.bloco || null,
     email: dados.email?.trim() || null
   };
 

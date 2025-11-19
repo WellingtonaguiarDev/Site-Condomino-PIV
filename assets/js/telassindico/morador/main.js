@@ -142,8 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
         await criarMorador(dados);
       }
 
-      // Só muda de tela se não deu erro
-      await carregarHistorico();
+      //limpa o form
+      form.reset();
 
     } catch (err) {
       console.error("Erro ao salvar morador:", err);

@@ -22,10 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
         communication_type: "notice"
       };
 
-      const result = await criarComunicado(dados);
-      if (result) {
-        await carregarHistoricoComunicados();
-      }
+      await criarComunicado(dados);
+
+      //limpa o form
+      form.reset();
+
     });
   }
 

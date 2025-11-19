@@ -150,8 +150,8 @@ async function carregarHistorico() {
         await criarReserva(dados);
         alert("Reserva cadastrada com sucesso!");
       }
-
-      await carregarHistorico();
+      //limpa o form
+      form.reset();
     } catch (err) {
       console.error("Erro ao salvar reserva:", err);
       alert("Não foi possível salvar a reserva. Verifique e tente novamente.");

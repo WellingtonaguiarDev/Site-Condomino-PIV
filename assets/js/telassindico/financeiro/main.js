@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loading = content.querySelector("#loadingHistoricoFinanceiro");
     loading.style.display = "block";
 
-    const lancamentos = await listarLancamentos();
+    const lancamentos = await listarLancamentosFinanceiros();
 
     tbody.innerHTML = lancamentos.length
       ? lancamentos.map(l => `
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (btnEditar) {
         e.stopPropagation();
         const id = btnEditar.dataset.id;
-        const lancamentos = await listarLancamentos();
+        const lancamentos = await listarLancamentosFinanceiros();
         const lancamento = lancamentos.find(l => l.id == id);
         if (lancamento) carregarCadastro(lancamento);
         return;
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         const id = btnExcluir.dataset.id;
         if (confirm("Deseja excluir este lançamento?")) {
-          await deletarLancamento(id);
+          await deletarLancamentoFinanceiro(id);
           await carregarHistorico();
         }
       }
@@ -92,21 +92,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = e.target;
     const arquivo = form.documento.files[0] || null;
 
-    const formData = new FormData();
-    formData.append("description", form.descricao.value.trim());
-    formData.append("value", form.valor.value.trim());
-    if (arquivo) formData.append("document", arquivo);
-    const condominioCode = JSON.parse(localStorage.getItem("condominioSelecionado"))?.code_condominium;
-    formData.append("condominium_code", condominioCode);
+    const dados = {
+      descricao: form.descricao.value.trim(),
+      valor: form.valor.value.trim(),
+      documento: arquivo
+    };
 
     try {
       if (form.dataset.id) {
-        await atualizarLancamento(form.dataset.id, formData);
+        await atualizarLancamentoFinanceiro(form.dataset.id, dados);
       } else {
-        await criarLancamento(formData);
+        await criarLancamentoFinanceiro(dados);
       }
 
-      await carregarHistorico();
+      form.reset();
+      form.removeAttribute("data-id");
+
     } catch (err) {
       console.error("Erro ao salvar lançamento:", err);
       alert("Não foi possível salvar o lançamento. Verifique os dados e tente novamente.");
@@ -116,12 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // ======== Navegação Menu ========
   const menu = document.querySelector("#menuFinanceiro");
   if (menu) {
-    menu.addEventListener("click", (e) => {
+    menu.addEventListener("click", async (e) => {
       if (!e.target.classList.contains("subitem")) return;
       const item = e.target.textContent.trim();
 
-      if (item === "Cadastro de lançamentos") carregarCadastro();
-      if (item === "Histórico de lançamentos") carregarHistorico();
+      if (item === "Cadastro de lançamentos") await carregarCadastro();
+      if (item === "Histórico de lançamentos") await carregarHistorico();
     });
   }
 });

@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Reserva cadastrada com sucesso!");
       }
 
-      // 🔹 só muda para histórico se não houver erro
-      await carregarHistorico();
+      //limpa o form
+      form.reset();
 
     } catch (err) {
       console.error("Erro ao salvar reserva:", err);

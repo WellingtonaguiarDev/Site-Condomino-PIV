@@ -106,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
         await criarEntrega(dados);
       }
 
-      // 🔹 só muda para histórico se não houver erro
-      await carregarHistorico();
+      //limpa o form
+      form.reset();
 
     } catch (err) {
       console.error(err);

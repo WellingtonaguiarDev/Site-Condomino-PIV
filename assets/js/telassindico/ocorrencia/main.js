@@ -132,8 +132,9 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Ocorrência cadastrada com sucesso!");
       }
 
-      // Só troca para histórico se deu certo
-      await carregarHistorico();
+      //limpa o form
+      form.reset();
+
     } catch (err) {
       console.error("Erro ao salvar ocorrência:", err);
       alert("Não foi possível salvar a ocorrência. Verifique e tente novamente.");

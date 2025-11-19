@@ -131,8 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
         sucesso = !!criado;
       }
 
-      // só vai pra tela de histórico se deu certo
-      if (sucesso) await carregarHistorico();
+      //limpa o form
+      form.reset();
+      
     } catch (err) {
       console.error("Erro ao salvar visitante:", err);
       alert("Erro ao salvar visitante.");

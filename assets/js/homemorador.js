@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const greeting = document.getElementById("moradorNome");
     if (greeting) greeting.textContent = `Olá, ${data.name || "Morador"}`;
 
-    // 3️⃣ Pega o código do condomínio
-    const condoCode = data.condominium;
+    // 3️⃣ Pega o código do condomínio — CORREÇÃO AQUI
+    const condoCode = data?.apartment?.condominium;
     const condominioEl = document.getElementById("condominioNome");
 
     if (condoCode && condominioEl) {
@@ -44,6 +44,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!condoResponse.ok) throw new Error("Erro ao buscar condomínios");
 
       const condoList = await condoResponse.json();
+
+      // 5️⃣ Encontra o condomínio certo
       const condoData = condoList.results.find(c => c.code_condominium === condoCode);
 
       if (condoData) {

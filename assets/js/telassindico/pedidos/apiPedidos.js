@@ -15,8 +15,8 @@ async function criarEntrega(dados) {
   formData.append("order_code", dados.codigo);
   formData.append("status", "recebido");
   formData.append("code_condominium", condominio.code_condominium);
-  formData.append("apartment_number", Number(dados.apartamento));
-  formData.append("apartment_block", dados.bloco);
+  formData.append("number_apartment", Number(dados.apartamento));
+  formData.append("block_apartment", dados.bloco);
 
   if (dados.assinatura) {
     formData.append("signature_image", dados.assinatura);
@@ -32,6 +32,9 @@ async function criarEntrega(dados) {
     const msg = await res.text();
     throw new Error(msg);
   }
+
+  // Mensagem de sucesso adicionada aqui
+  alert("Entrega cadastrada com sucesso!");
 
   return await res.json();
 }

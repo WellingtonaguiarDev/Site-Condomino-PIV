@@ -16,8 +16,8 @@ async function criarOcorrencia(dados) {
     title: dados.titulo,
     description: dados.descricao,
     status: dados.status || "aberta",
-    apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
-    apartment_block: dados.bloco || null,
+    number_apartment: dados.apartamento ? Number(dados.apartamento) : null,
+    block_apartment: dados.bloco || null,
     code_condominium: condominio.code_condominium
   };
 
@@ -72,8 +72,8 @@ async function atualizarOcorrencia(id, dados) {
     title: dados.titulo,
     description: dados.descricao,
     status: dados.status || "aberta",
-    apartment_number: dados.apartamento ? Number(dados.apartamento) : null,
-    apartment_block: dados.bloco || null,
+    number_apartment: dados.apartamento ? Number(dados.apartamento) : null,
+    block_apartment: dados.bloco || null,
     code_condominium: condominio.code_condominium
   };
 
