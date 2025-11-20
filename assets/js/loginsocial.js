@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.need_register) {
                 window.location.href = '/pages/cadastrese.html';
             } else {
-                window.location.href = '/pages/dashboard.html';
+                window.location.href = '/pages/homemorador.html';
             }
         }, 1000);
     }

@@ -56,9 +56,17 @@ async function listarEntregas() {
   const data = await res.json();
 
   // 🔍 Filtra apenas entregas do condomínio selecionado
-  return (data.results || data).filter(
+  const entregasFiltradas = (data.results || data).filter(
     (e) => e.condominium?.code_condominium === condominio.code_condominium
   );
+
+  // 🔀 Ordena por bloco e número do apartamento
+  return entregasFiltradas.sort((a, b) => {
+    if (a.block_apartment < b.block_apartment) return -1;
+    if (a.block_apartment > b.block_apartment) return 1;
+    // Se o bloco for igual, compara o número do apartamento
+    return a.number_apartment - b.number_apartment;
+  });
 }
 
 async function deletarEntrega(id) {
