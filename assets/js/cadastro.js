@@ -1,81 +1,144 @@
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector(".login-form");
 
+  // 🔥 Se veio do Google, já temos o usuário criado
+  const googleUser = JSON.parse(localStorage.getItem("user"));
+  const userId = localStorage.getItem("user_id");
+  const isNewUser = localStorage.getItem("is_new_user") === "true";
+
+  // Preencher campos vindos do Google
+  if (googleUser) {
+    if (googleUser.name) form.nome.value = googleUser.name;
+    if (googleUser.email) {
+      form.email.value = googleUser.email;
+      form.email.readOnly = true;
+      form.email.style.background = "#eee";
+    }
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // PEGAR TOKEN DO RECAPTCHA
+    // recaptcha
     const recaptcha_token = grecaptcha.getResponse();
-
     if (!recaptcha_token) {
       alert("Por favor, confirme que você não é um robô.");
       return;
     }
 
-    // Coleta os dados do formulário
-    const nome = form.nome.value.trim();
-    const cpf = form.cpf.value.trim();
-    const telefone = form.telefone.value.trim();
-    const email = form.email.value.trim();
-    const senha = form.senha.value.trim();
-    const codigoCondominio = form.codigoCondominio.value.trim();
-    const apartamento = form.apartamento.value.trim();
-    const bloco = form.bloco.value.trim();
-
-    // Monta o JSON conforme o backend espera
+    // Dados do formulário
     const userData = {
-      name: nome,
-      email: email,
-      cpf: cpf,
-      password: senha,
-      telephone: telefone,
+      name: form.nome.value.trim(),
+      email: form.email.value.trim(),
+      cpf: form.cpf.value.trim(),
+      password: form.senha.value.trim(),
+      telephone: form.telefone.value.trim(),
       user_type: "resident",
-      number_apartment: Number(apartamento),
-      block_apartment: bloco,
-      code_condominium: codigoCondominio,
-      recaptcha_token: recaptcha_token 
+      number_apartment: Number(form.apartamento.value.trim()),
+      block_apartment: form.bloco.value.trim(),
+      code_condominium: form.codigoCondominio.value.trim(),
+      recaptcha_token: recaptcha_token
     };
 
-    console.log("📤 Enviando JSON para o servidor:");
-    console.log(JSON.stringify(userData, null, 2));
+    // Identifica se é fluxo Google
+    const isGoogleFlow = googleUser && isNewUser;
 
-    let url = "https://api.porttusmart.tech/api/v1/users/persons/";
-    console.log("🔍 URL original:", `"${url}"`);
-    url = url.trim();
-    console.log("✅ URL limpa:", `"${url}"`);
+    const url = isGoogleFlow
+      ? `https://api.porttusmart.tech/api/v1/users/persons/${userId}/`
+      : `https://api.porttusmart.tech/api/v1/users/persons/`;
+
+    const method = isGoogleFlow ? "PUT" : "POST";
+
+    // 🔥 PEGAR TOKEN (necessário para PUT)
+    const token = localStorage.getItem("access_token");
+
+    const headers = {
+      "Content-Type": "application/json"
+    };
+
+    if (isGoogleFlow && token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    // =======================
+    // 🔥 DEBUG COMPLETO 🔥
+    // =======================
+    console.log("============== DEBUG REQUEST ==============");
+    console.log("URL:", url);
+    console.log("METHOD:", method);
+    console.log("HEADERS:", headers);
+    console.log("BODY OBJ:", userData);
+    console.log("BODY JSON:", JSON.stringify(userData, null, 2));
+    console.log("===========================================");
 
     try {
       const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        method,
+        headers,
         body: JSON.stringify(userData)
       });
 
-      console.log("📡 Status da resposta:", response.status);
+      console.log("============== DEBUG RESPONSE =============");
+      console.log("STATUS:", response.status, response.statusText);
 
-      if (response.ok) {
-        alert("✅ Cadastro realizado com sucesso!");
-        form.reset();
-        grecaptcha.reset(); // reseta o recaptcha
-        window.location.href = "../index.html";
-      } else {
-        let errorText;
-        try {
-          const errorData = await response.json();
-          console.log("🧾 Resposta do servidor (JSON):", errorData);
-          errorText = errorData.message || JSON.stringify(errorData);
-        } catch {
-          const textData = await response.text();
-          console.warn("⚠️ Servidor retornou HTML ou texto:", textData);
-          errorText = textData;
-        }
-        alert("❌ Erro ao cadastrar:\n" + errorText);
+      let cloned = response.clone();
+
+      try {
+        const json = await cloned.json();
+        console.log("JSON RESPONSE:", json);
+      } catch (e) {
+        const text = await cloned.text();
+        console.log("TEXT RESPONSE:", text);
       }
+
+      console.log("===========================================");
+
+      // 🟢 SE OK
+      if (response.ok) {
+        alert("✅ Cadastro finalizado com sucesso!");
+
+        localStorage.removeItem("user");
+        localStorage.removeItem("is_new_user");
+
+        grecaptcha.reset();
+        form.reset();
+
+        window.location.href = "../index.html";
+        return;
+      }
+
+      // 🔥 --- TRATAMENTO ESPECIAL PARA USUÁRIO INATIVO ---
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = {};
+      }
+
+      if (errorData.code === "user_inactive") {
+        alert("🟡 Seu cadastro foi enviado!\nO síndico precisa ativar sua conta antes do primeiro acesso.");
+
+        localStorage.removeItem("user");
+        localStorage.removeItem("is_new_user");
+
+        grecaptcha.reset();
+        form.reset();
+
+        window.location.href = "../index.html";
+        return;
+      }
+      // ---------------------------------------------------
+
+      // ❌ Caso não seja user_inactive → erro normal
+      const errorText =
+        errorData.message || JSON.stringify(errorData) || "Erro desconhecido";
+
+      alert("❌ Erro ao cadastrar:\n" + errorText);
+
     } catch (error) {
-      console.error("🚨 Erro de rede ou fetch:", error);
-      alert("Erro de conexão com o servidor. Tente novamente mais tarde.");
+      console.error("🚨 ERRO NO FETCH =====");
+      console.error(error);
+      alert("Erro de conexão com o servidor.");
     }
   });
 });
