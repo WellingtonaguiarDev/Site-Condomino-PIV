@@ -12,7 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (googleUser.email) {
       form.email.value = googleUser.email;
       form.email.readOnly = true;
-      form.email.style.background = "#eee";
+
+      // 🌟 Estilização bonita e visível
+      form.email.style.background = "#f5f5f5";
+      form.email.style.color = "#333";
+      form.email.style.border = "1px solid #ccc";
+      form.email.style.cursor = "not-allowed";
     }
   }
 
@@ -49,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const method = isGoogleFlow ? "PUT" : "POST";
 
-    // 🔥 PEGAR TOKEN (necessário para PUT)
+    // 🔥 TOKEN NECESSÁRIO PARA PUT
     const token = localStorage.getItem("access_token");
 
     const headers = {
@@ -107,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 🔥 --- TRATAMENTO ESPECIAL PARA USUÁRIO INATIVO ---
+      // 🔥 --- TRATAMENTO PARA USUÁRIO INATIVO ---
       let errorData;
       try {
         errorData = await response.json();
@@ -129,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // ---------------------------------------------------
 
-      // ❌ Caso não seja user_inactive → erro normal
+      // ❌ Erro normal
       const errorText =
         errorData.message || JSON.stringify(errorData) || "Erro desconhecido";
 

@@ -17,6 +17,7 @@ O **PorttuSmart** é uma plataforma digital moderna que facilita a administraç�
 - **Comunicados**: Visualização de avisos e informações
 - **Mensagens**: Sistema de comunicação com a administração
 - **Notificações**: Alertas em tempo real
+- **Alteração de Senha**: Gerenciamento de credenciais de acesso
 
 ### 🏢 Para Síndicos/Gestores
 - **Moradores**: Cadastro e histórico de moradores
@@ -24,11 +25,13 @@ O **PorttuSmart** é uma plataforma digital moderna que facilita a administraç�
 - **Veículos**: Gerenciamento de veículos de moradores
 - **Entregas**: Cadastro e histórico de entregas
 - **Reservas**: Aprovação e controle de reservas
-- **Financeiro**: Gestão de boletos e pagamentos
+- **Financeiro**: Gestão completa de boletos e pagamentos
 - **Ocorrências**: Registro e acompanhamento de manutenções
 - **Comunicados**: Criação e envio de avisos
 - **Mensagens**: Central de atendimento aos moradores
 - **Multi-condomínios**: Gestão de múltiplos condomínios
+- **Apartamentos**: Controle de unidades habitacionais
+- **Alteração de Senha**: Gerenciamento de credenciais de acesso
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -38,11 +41,15 @@ O **PorttuSmart** é uma plataforma digital moderna que facilita a administraç�
 - **JavaScript (ES6+)**: Lógica de negócio e interações
 - **Fetch API**: Comunicação com backend
 - **LocalStorage**: Armazenamento local de dados
+- **Google OAuth 2.0**: Autenticação social com Google
+- **reCAPTCHA**: Proteção contra bots e spam
 
 ### Backend/API
 - **API REST**: `https://api.porttusmart.tech/api/v1/`
 - **Autenticação JWT**: Sistema de tokens de acesso
+- **Google OAuth**: Integração com login social
 - **PostgreSQL**: Banco de dados (estrutura em `porttusmart_banco.txt`)
+- **reCAPTCHA**: Validação server-side
 
 ## 📁 Estrutura do Projeto
 
@@ -51,13 +58,19 @@ Site-Condomino-PIV/
 ├── assets/
 │   ├── css/
 │   │   ├── telasmorador/          # Estilos específicos do morador
+│   │   │   ├── morador_senha.css  # Alteração de senha
+│   │   │   └── ...                # Outros estilos do morador
 │   │   ├── telassindico/          # Estilos específicos do síndico
+│   │   │   ├── sindico_financeiro.css # Gestão financeira
+│   │   │   ├── sindico_senha.css  # Alteração de senha
+│   │   │   └── ...                # Outros estilos do síndico
 │   │   ├── homemorador.css        # Dashboard do morador
 │   │   ├── homesindico.css        # Dashboard do síndico
 │   │   ├── login.css              # Tela de login
 │   │   └── ia_chatbot.css         # Interface do chatbot
 │   ├── img/
 │   │   ├── fundo-login.png        # Background da tela de login
+│   │   ├── google-icon.png        # Ícone do Google
 │   │   └── logoinit.jpeg          # Logo da aplicação
 │   └── js/
 │       ├── telasmorador/          # Scripts específicos do morador
@@ -67,21 +80,28 @@ Site-Condomino-PIV/
 │       │   ├── mensagens/
 │       │   ├── pedidos/
 │       │   ├── reservas/
+│       │   ├── senha/             # Alteração de senha
 │       │   └── veiculos/
 │       ├── telassindico/          # Scripts específicos do síndico
 │       │   ├── comunicados/
+│       │   ├── financeiro/        # Gestão financeira completa
 │       │   ├── mensagens/
 │       │   ├── morador/
 │       │   ├── ocorrencia/
 │       │   ├── pedidos/
 │       │   ├── reservas/
+│       │   ├── senha/             # Alteração de senha
 │       │   ├── veiculos/
 │       │   └── visitante/
+│       ├── apiApartments.js       # API de apartamentos
+│       ├── cadastro.js            # Cadastro com Google/reCAPTCHA
 │       ├── login.js               # Autenticação
+│       ├── loginsocial.js         # Login social Google
 │       ├── logout.js              # Encerramento de sessão
 │       └── mobile.js              # Responsividade mobile
 ├── pages/
 │   ├── cadastrese.html            # Cadastro de usuários
+│   ├── callback.html              # Callback OAuth Google
 │   ├── esqueceusenha.html         # Recuperação de senha
 │   ├── homemorador.html           # Dashboard do morador
 │   ├── homesindico.html           # Dashboard do síndico
@@ -116,11 +136,22 @@ Site-Condomino-PIV/
 
 ## 🔐 Autenticação
 
-O sistema utiliza autenticação JWT com os seguintes endpoints:
+O sistema oferece múltiplas formas de autenticação:
 
+### Autenticação Tradicional (JWT)
 - **Login**: `POST /api/v1/auth/login/`
 - **Dados do usuário**: `GET /api/v1/users/persons/me/`
 - **Refresh token**: `POST /api/v1/auth/refresh/`
+
+### Autenticação Social
+- **Google OAuth 2.0**: Login integrado com conta Google
+- **Endpoint**: `POST /api/v1/auth/google/`
+- **Callback**: Página dedicada para processamento OAuth
+
+### Segurança
+- **reCAPTCHA**: Proteção contra bots no cadastro
+- **Validação de origem**: Controle de domínios permitidos
+- **Tokens seguros**: Armazenamento local protegido
 
 ### Tipos de Usuário
 - **Morador/Resident**: Acesso ao painel do morador
@@ -140,11 +171,12 @@ O sistema utiliza PostgreSQL com as seguintes entidades principais:
 - **Condomínio**: Dados dos condomínios
 - **Usuário**: Informações de login e perfil
 - **Morador**: Dados específicos dos moradores
+- **Apartamento**: Unidades habitacionais
 - **Visitante**: Controle de acesso
 - **Veículo**: Cadastro de veículos
 - **Área Comum**: Espaços para reserva
 - **Reserva**: Agendamentos de áreas
-- **Financeiro**: Controle de pagamentos
+- **Financeiro**: Controle de pagamentos e boletos
 - **Ocorrência**: Registro de problemas/manutenções
 - **Comunicado**: Avisos e informações
 - **Mensagem**: Sistema de comunicação
@@ -171,6 +203,13 @@ Cada funcionalidade é organizada em módulos com:
 - **API**: Comunicação com backend (`api*.js`)
 - **Telas**: Renderização de interfaces (`telas*.js`)
 - **Main**: Inicialização e controle (`main.js`)
+
+### Funcionalidades Avançadas
+- **Login Social**: Integração completa com Google OAuth
+- **Cadastro Inteligente**: Preenchimento automático via Google
+- **Proteção Anti-Bot**: reCAPTCHA integrado
+- **Gestão de Apartamentos**: API dedicada para unidades
+- **Módulo Financeiro**: Controle completo de pagamentos
 
 ### Convenções
 - Nomes de arquivos em português
