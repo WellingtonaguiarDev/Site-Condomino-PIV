@@ -1,149 +1,122 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector(".login-form");
-
-  // 🔥 Se veio do Google, já temos o usuário criado
-  const googleUser = JSON.parse(localStorage.getItem("user"));
-  const userId = localStorage.getItem("user_id");
-  const isNewUser = localStorage.getItem("is_new_user") === "true";
-
-  // Preencher campos vindos do Google
-  if (googleUser) {
-    if (googleUser.name) form.nome.value = googleUser.name;
-    if (googleUser.email) {
-      form.email.value = googleUser.email;
-      form.email.readOnly = true;
-
-      // 🌟 Estilização bonita e visível
-      form.email.style.background = "#f5f5f5";
-      form.email.style.color = "#333";
-      form.email.style.border = "1px solid #ccc";
-      form.email.style.cursor = "not-allowed";
-    }
-  }
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    // recaptcha
-    const recaptcha_token = grecaptcha.getResponse();
-    if (!recaptcha_token) {
-      alert("Por favor, confirme que você não é um robô.");
-      return;
-    }
-
-    // Dados do formulário
-    const userData = {
-      name: form.nome.value.trim(),
-      email: form.email.value.trim(),
-      cpf: form.cpf.value.trim(),
-      password: form.senha.value.trim(),
-      telephone: form.telefone.value.trim(),
-      user_type: "resident",
-      number_apartment: Number(form.apartamento.value.trim()),
-      block_apartment: form.bloco.value.trim(),
-      code_condominium: form.codigoCondominio.value.trim(),
-      recaptcha_token: recaptcha_token
-    };
-
-    // Identifica se é fluxo Google
-    const isGoogleFlow = googleUser && isNewUser;
-
-    const url = isGoogleFlow
-      ? `https://api.porttusmart.tech/api/v1/users/persons/${userId}/`
-      : `https://api.porttusmart.tech/api/v1/users/persons/`;
-
-    const method = isGoogleFlow ? "PUT" : "POST";
-
-    // 🔥 TOKEN NECESSÁRIO PARA PUT
-    const token = localStorage.getItem("access_token");
-
-    const headers = {
-      "Content-Type": "application/json"
-    };
-
-    if (isGoogleFlow && token) {
-      headers["Authorization"] = `Bearer ${token}`;
-    }
-
-    // =======================
-    // 🔥 DEBUG COMPLETO 🔥
-    // =======================
-    console.log("============== DEBUG REQUEST ==============");
-    console.log("URL:", url);
-    console.log("METHOD:", method);
-    console.log("HEADERS:", headers);
-    console.log("BODY OBJ:", userData);
-    console.log("BODY JSON:", JSON.stringify(userData, null, 2));
-    console.log("===========================================");
-
-    try {
-      const response = await fetch(url, {
-        method,
-        headers,
-        body: JSON.stringify(userData)
-      });
-
-      console.log("============== DEBUG RESPONSE =============");
-      console.log("STATUS:", response.status, response.statusText);
-
-      let cloned = response.clone();
-
-      try {
-        const json = await cloned.json();
-        console.log("JSON RESPONSE:", json);
-      } catch (e) {
-        const text = await cloned.text();
-        console.log("TEXT RESPONSE:", text);
-      }
-
-      console.log("===========================================");
-
-      // 🟢 SE OK
-      if (response.ok) {
-        alert("✅ Cadastro finalizado com sucesso!");
-
-        localStorage.removeItem("user");
-        localStorage.removeItem("is_new_user");
-
-        grecaptcha.reset();
-        form.reset();
-
-        window.location.href = "../index.html";
+    const form = document.querySelector(".login-form");
+  
+    if (!form) return;
+  
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      // PEGAR TOKEN DO RECAPTCHA
+      const recaptchaResponse = grecaptcha.getResponse();
+  
+      if (!recaptchaResponse) {
+        alert("Por favor, confirme que você não é um robô.");
         return;
       }
+  
+      // Coleta os dados do formulário
+      const nome = form.nome.value.trim();
+      const cpf = form.cpf.value.trim();
+      const telefone = form.telefone.value.trim();
+      const email = form.email.value.trim();
+      const senha = form.senha.value.trim();
+      const codigoCondominio = form.codigoCondominio.value.trim();
+      const apartamento = form.apartamento.value.trim();
+      const bloco = form.bloco.value.trim();
 
-      // 🔥 --- TRATAMENTO PARA USUÁRIO INATIVO ---
-      let errorData;
+      let numApt = parseInt(apartamento);
+      if (isNaN(numApt)) {
+        numApt = null;
+      }
+      // Monta o JSON conforme o backend espera
+      const userData = {
+        name: nome,
+        email: email,
+        cpf: cpf,
+        password: senha,
+        telephone: telefone,
+        user_type: "resident",
+        number_apartment: numApt,
+        block_apartment: bloco,
+        code_condominium: codigoCondominio,
+        recaptcha_token: recaptchaResponse 
+      };
+  
+      console.log("📤 Enviando dados para o servidor...");
+  
+      let url = "https://api.porttusmart.tech/api/v1/users/persons/";
+      
+      // --- TRATAMENTO DE TOKEN (GOOGLE LOGIN) ---
+      const token = localStorage.getItem("access_token");
+      const headers = {
+        "Content-Type": "application/json"
+      };
+  
+      // Se tiver token, envia no header para vincular ao user criado pelo Google
+      if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+          console.log("🔑 Token detectado. Enviando requisição autenticada.");
+      }
+  
       try {
-        errorData = await response.json();
-      } catch {
-        errorData = {};
+        const response = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(userData)
+        });
+
+        console.log("Payload enviado:", userData);
+  
+        console.log("📡 Status da resposta:", response.status);
+  
+        if (response.ok) {
+          
+          // SUCESSO: Limpa tudo e redireciona para LOGIN
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          
+          // Limpa flag de novo usuário
+          const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+          if (storedUser.is_new_user) {
+             storedUser.is_new_user = false;
+             localStorage.setItem('user', JSON.stringify(storedUser));
+          }
+  
+          form.reset();
+          grecaptcha.reset();
+  
+          // AVISO IMPORTANTE DA REGRA DE NEGÓCIO
+          alert("✅ Solicitação de cadastro enviada com sucesso!\n\nSeu perfil está em análise pelo síndico. Você receberá um e-mail assim que seu acesso for liberado.");
+          
+          // Redireciona para o LOGIN
+          window.location.href = "../index.html";
+          
+        } else {
+          // Tratamento de Erros
+          let errorText = "Erro desconhecido";
+          try {
+            const errorData = await response.json();
+            console.log("🧾 Erro JSON:", errorData);
+            
+            if (errorData.detail) {
+                errorText = errorData.detail;
+            } else if (typeof errorData === 'object') {
+                // Pega a primeira mensagem de erro
+                const firstKey = Object.keys(errorData)[0];
+                const msg = Array.isArray(errorData[firstKey]) ? errorData[firstKey][0] : errorData[firstKey];
+                errorText = `${firstKey}: ${msg}`;
+            } else {
+                errorText = JSON.stringify(errorData);
+            }
+          } catch {
+            const textData = await response.text();
+            errorText = "Erro interno no servidor ou formato inválido.";
+          }
+          alert("❌ Não foi possível concluir o cadastro:\n" + errorText);
+        }
+      } catch (error) {
+        console.error("🚨 Erro de rede:", error);
+        alert("Erro de conexão com o servidor. Verifique sua internet.");
       }
-
-      if (errorData.code === "user_inactive") {
-        alert("🟡 Seu cadastro foi enviado!\nO síndico precisa ativar sua conta antes do primeiro acesso.");
-
-        localStorage.removeItem("user");
-        localStorage.removeItem("is_new_user");
-
-        grecaptcha.reset();
-        form.reset();
-
-        window.location.href = "../index.html";
-        return;
-      }
-      // ---------------------------------------------------
-
-      // ❌ Erro normal
-      const errorText =
-        errorData.message || JSON.stringify(errorData) || "Erro desconhecido";
-
-      alert("❌ Erro ao cadastrar:\n" + errorText);
-
-    } catch (error) {
-      console.error("🚨 ERRO NO FETCH =====");
-      console.error(error);
-      alert("Erro de conexão com o servidor.");
-    }
-  });
+    });
 });
