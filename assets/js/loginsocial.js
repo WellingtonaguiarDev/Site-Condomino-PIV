@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "https://www.porttusmart.tech",
         "http://localhost:5500",
         "https://site-condomino-piv.vercel.app",
-        "https://d128i9hqy82wx1.cloudfront.net/",
+        "https://d128i9hqy82wx1.cloudfront.net",
         "https://api.porttusmart.tech"
     ];
 
