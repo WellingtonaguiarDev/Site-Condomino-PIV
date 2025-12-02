@@ -12,7 +12,7 @@ const telasMoradores = {
 
         <div class="form-group-morador">
           <label>CPF</label>
-          <input type="text" name="cpf" placeholder="000.000.000-00" required>
+          <input type="text" name="cpf" placeholder="00000000000" required>
         </div>
 
         <div class="form-group-morador">
@@ -22,7 +22,7 @@ const telasMoradores = {
 
         <div class="form-group-morador">
           <label>Telefone</label>
-          <input type="tel" name="telefone" placeholder="(00) 00000-0000" required>
+          <input type="tel" name="telefone" placeholder="00000000000" required>
         </div>
 
         <div class="form-group-morador">

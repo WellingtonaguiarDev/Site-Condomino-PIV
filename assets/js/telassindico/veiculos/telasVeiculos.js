@@ -10,7 +10,7 @@ const telasVeiculos = {
       <form class="form-cadastro-veiculo">
         <div class="form-group-veiculo">
           <label>Placa</label>
-          <input type="text" name="placa" placeholder="ABC-1234" required>
+          <input type="text" name="placa" placeholder="ABC1234" required>
         </div>
 
         <div class="form-group-veiculo">

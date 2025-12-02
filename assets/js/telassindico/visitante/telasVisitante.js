@@ -15,7 +15,7 @@ const telasVisitantes = {
 
         <div class="form-group-visitante">
           <label>CPF</label>
-          <input type="text" name="cpf" placeholder="000.000.000-00" required>
+          <input type="text" name="cpf" placeholder="00000000000" required>
         </div>
 
         <div class="form-group-visitante">

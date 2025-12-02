@@ -4,6 +4,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const content = document.querySelector(".content");
   let comunicadosTbodyListener = null;
+  let documentosTbodyListener = null;
 
   // ------------------------------------------------------
   // Carregar todos os apartamentos e filtrar pelo condomínio
